@@ -49,7 +49,7 @@ class LearnTopicHandler(ActionHandler):
                     success=False,
                     message=(
                         f"I need an LLM key to research '{topic}' automatically. "
-                        "Add ANTHROPIC_API_KEY to .env, or say: "
+                        "Add GROQ_API_KEY, ANTHROPIC_API_KEY, or OPENAI_API_KEY to .env, or say: "
                         f"learn that <facts> about {topic}"
                     ),
                     error="LLM_REQUIRED",

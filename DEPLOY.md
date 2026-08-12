@@ -78,22 +78,24 @@ Share your screen or record with OBS. Gestures, mic, and female voice all work o
 
 ### Option B — Streamlit Community Cloud (free public URL)
 
-Best for: shareable link without your laptop running.
+Best for: shareable portfolio link.
 
-**Limits:** No webcam gestures on server; voice uses browser TTS (works); LLM needs secrets in dashboard.
-
-1. Push repo to GitHub (public or private)
-2. https://share.streamlit.io → New app
-3. Repository: your repo
-4. **Main file path:** `desktop/shell.py`
-5. **Secrets** (Settings → Secrets), paste:
+1. Push repo to GitHub (see above)
+2. https://share.streamlit.io → **Create app**
+3. Repository: `veerendrakalyanbabu-VKB/astra-platform`
+4. Branch: `main`
+5. **Main file path:** `app.py`
+6. **Secrets** (Settings → Secrets):
 
 ```toml
-ANTHROPIC_API_KEY = "sk-ant-..."
-# or OPENAI_API_KEY = "sk-..."
+GROQ_API_KEY = "your_groq_key"
+ASTRA_LLM_PROVIDER = "groq"
+ASTRA_USER_NAME = "YourName"
 ```
 
-6. Deploy → you get `https://YOUR-APP.streamlit.app`
+7. Deploy → live URL like `https://astra-platform-xxxx.streamlit.app`
+
+Full walkthrough: **[STREAMLIT_DEPLOY.md](STREAMLIT_DEPLOY.md)**
 
 ### Option C — VPS / Railway / Fly.io (production)
 

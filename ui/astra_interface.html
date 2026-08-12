@@ -580,7 +580,7 @@ const AstraAudio = {
   },
 };
 const astraAudio = AstraAudio;
-const jarvis = astraAudio;
+const astra_hello = astraAudio;
 function warmSpeechVoices() {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.getVoices();
@@ -608,7 +608,7 @@ function stopSpeakVisualizer() {
 
 function sendCommand(cmd, src) {
   cmd = normalizeAgentCommand(cmd);
-  jarvis.sfxSend();
+  astra_hello.sfxSend();
   setCoreState("executing");
   try { sessionStorage.setItem("astra_speak_next", "1"); } catch (_) {}
   const targets = [window.top, window.parent];
@@ -926,7 +926,7 @@ function renderMessages() {
 }
 renderMessages();
 
-// Speak latest Astra response after command (JARVIS voice)
+// Speak latest Astra response after command (Astra voice)
 (function speakLatestResponse() {
   try {
     if (sessionStorage.getItem("astra_speak_next") !== "1") return;
@@ -935,8 +935,8 @@ renderMessages();
   const last = MESSAGES.filter(m => m.role === "astra").pop();
   if (!last?.content) return;
   setTimeout(() => {
-    jarvis.sfxResponse();
-    jarvis.speak(last.content);
+    astra_hello.sfxResponse();
+    astra_hello.speak(last.content);
   }, 600);
 })();
 
@@ -1189,11 +1189,11 @@ async function setupVoice(){
   document.getElementById("command-mic").onclick = toggleMic;
   function toggleMic() {
     if (!recognition) return;
-    jarvis.ensureCtx();
+    astra_hello.ensureCtx();
     if (listening) { recognition.stop(); setCoreState("idle"); return; }
     listening = true;
     setCoreState("listening");
-    jarvis.sfxListen();
+    astra_hello.sfxListen();
     document.getElementById("mic-btn").classList.add("on");
     recognition.start();
   }
@@ -1201,13 +1201,13 @@ async function setupVoice(){
 
 // Audio control buttons
 document.getElementById("btn-ambient").onclick = function() {
-  jarvis.ensureCtx();
-  jarvis.toggleAmbient(this);
+  astra_hello.ensureCtx();
+  astra_hello.toggleAmbient(this);
 };
 document.getElementById("btn-voice").onclick = function() {
-  jarvis.voiceOn = !jarvis.voiceOn;
-  this.classList.toggle("on", jarvis.voiceOn);
-  if (!jarvis.voiceOn) window.speechSynthesis?.cancel();
+  astra_hello.voiceOn = !astra_hello.voiceOn;
+  this.classList.toggle("on", astra_hello.voiceOn);
+  if (!astra_hello.voiceOn) window.speechSynthesis?.cancel();
   speaking = false;
   stopSpeakVisualizer();
 };

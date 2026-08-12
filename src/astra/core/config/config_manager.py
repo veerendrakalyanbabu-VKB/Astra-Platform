@@ -74,3 +74,4 @@ class ConfigManager:
         # Back-compat flags
         config["openai_api_key_set"] = llm_cfg["openai_key_set"]
         config["anthropic_api_key_set"] = llm_cfg["anthropic_key_set"]
+        config["groq_api_key_set"] = llm_cfg.get("groq_key_set", False)

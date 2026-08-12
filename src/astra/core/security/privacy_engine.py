@@ -85,7 +85,8 @@ class PrivacyEngine:
             "Use ASTRA_PRIVACY_MODE=strict to disable remote sync.",
         ]
         if llm_on:
-            tips.append("Set ASTRA_LLM_PROVIDER=anthropic for Claude, or openai for GPT.")
+            tips.append("Set GROQ_API_KEY (free tier), ANTHROPIC_API_KEY, or OPENAI_API_KEY in .env.")
+            tips.append("Force provider: ASTRA_LLM_PROVIDER=groq|anthropic|openai")
         else:
             tips.append("Offline mode: rules + local knowledge work without any API key.")
         return tips

@@ -58,7 +58,7 @@ Write-Host ""
 if ($code -eq 0) {
     Write-Host "SETUP COMPLETE" -ForegroundColor Green
     Write-Host ""
-    Write-Host "  python astra_hello.py      First win — Claude + voice greet"
+    Write-Host "  python Astra_hello.py      First win — Claude + voice greet"
     Write-Host "  FAST: .\go.ps1  (auto-opens browser)" -ForegroundColor Green
     Write-Host "  python main.py --desktop  Command OS (8501)"
     Write-Host "  python main.py --portal   Free trial + pricing (8503)"

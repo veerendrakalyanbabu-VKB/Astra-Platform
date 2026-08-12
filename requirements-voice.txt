@@ -1,4 +1,4 @@
-# JARVIS voice stack — install for jarvis_hello.py and python main.py --voice
+# Astra voice stack — install for Astra_hello.py and python main.py --voice
 python-dotenv>=1.0
 anthropic>=0.40
 elevenlabs>=1.0

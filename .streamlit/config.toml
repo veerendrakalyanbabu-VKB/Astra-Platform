@@ -1,12 +1,17 @@
 [server]
 headless = true
+enableCORS = false
+enableXsrfProtection = false
+maxUploadSize = 5
 
 [browser]
 gatherUsageStats = false
-serverAddress = "localhost"
-
-[runner]
-fastReruns = true
+serverAddress = "0.0.0.0"
 
 [theme]
 base = "dark"
+primaryColor = "#d4a043"
+backgroundColor = "#07080c"
+secondaryBackgroundColor = "#0c0e14"
+textColor = "#d8d4c8"
+font = "sans serif"

@@ -6,6 +6,7 @@
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
 ![Streamlit](https://img.shields.io/badge/streamlit-1.57+-red)
 ![License MIT](https://img.shields.io/badge/license-MIT-green)
+[![Live Demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
 
 ---
 
@@ -118,7 +119,9 @@ python -m pytest tests/ -q
 
 Full guide: **[DEPLOY.md](DEPLOY.md)**
 
-Streamlit Cloud: main file `desktop/shell.py`, add `ANTHROPIC_API_KEY` in Secrets.
+Streamlit Cloud: main file `app.py`, add `GROQ_API_KEY` in Secrets.
+
+See **[STREAMLIT_DEPLOY.md](STREAMLIT_DEPLOY.md)** for click-by-click deploy.
 
 ---
 

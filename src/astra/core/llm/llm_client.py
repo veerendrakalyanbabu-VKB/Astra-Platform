@@ -1,50 +1,71 @@
-"""Unified LLM client — OpenAI and Anthropic Claude with local-first privacy."""
+"""Unified LLM client — Groq, OpenAI, and Anthropic with local-first privacy."""
 
 import json
 import os
 import re
 import urllib.error
 import urllib.request
-from typing import Dict, List, Optional, Tuple
-
+from typing import Dict, List, Optional
 
 OPENAI_DEFAULT = "gpt-4o-mini"
 ANTHROPIC_DEFAULT = "claude-3-5-haiku-20241022"
+GROQ_DEFAULT = "llama-3.3-70b-versatile"
+
+OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+DEFAULT_MODELS = {
+    "anthropic": ANTHROPIC_DEFAULT,
+    "openai": OPENAI_DEFAULT,
+    "groq": GROQ_DEFAULT,
+}
+
+PROVIDER_LABELS = {
+    "anthropic": "Claude Active",
+    "openai": "GPT Active",
+    "groq": "Groq Active",
+}
+
+
+def _pick_auto_provider(openai_key: str, anthropic_key: str, groq_key: str) -> Optional[str]:
+    """Auto order: Groq (fast/free) → Claude → OpenAI."""
+    if groq_key:
+        return "groq"
+    if anthropic_key:
+        return "anthropic"
+    if openai_key:
+        return "openai"
+    return None
 
 
 def resolve_llm_config() -> Dict:
-    """Pick provider from env: anthropic | openai | auto (prefers Claude when both set)."""
+    """Pick provider from env: groq | anthropic | openai | auto."""
     provider = (os.environ.get("ASTRA_LLM_PROVIDER") or "auto").strip().lower()
     openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
 
-    if provider == "anthropic":
+    if provider == "groq":
+        active = "groq" if groq_key else None
+    elif provider == "anthropic":
         active = "anthropic" if anthropic_key else None
     elif provider == "openai":
         active = "openai" if openai_key else None
     else:
-        if anthropic_key:
-            active = "anthropic"
-        elif openai_key:
-            active = "openai"
-        else:
-            active = None
+        active = _pick_auto_provider(openai_key, anthropic_key, groq_key)
 
     model = os.environ.get("ASTRA_LLM_MODEL", "").strip()
-    if not model:
-        model = ANTHROPIC_DEFAULT if active == "anthropic" else OPENAI_DEFAULT
+    if not model and active:
+        model = DEFAULT_MODELS[active]
 
-    label = "Standby"
-    if active == "anthropic":
-        label = "Claude Active"
-    elif active == "openai":
-        label = "GPT Active"
+    label = PROVIDER_LABELS.get(active, "Standby") if active else "Standby"
 
     return {
         "provider": active,
         "model": model,
         "openai_key_set": bool(openai_key),
         "anthropic_key_set": bool(anthropic_key),
+        "groq_key_set": bool(groq_key),
         "llm_active": active is not None,
         "llm_label": label,
     }
@@ -59,6 +80,7 @@ class LLMClient:
         self.model = cfg["model"]
         self.openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
         self.anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        self.groq_key = os.environ.get("GROQ_API_KEY", "").strip()
 
         if enabled is None:
             enabled = cfg["llm_active"]
@@ -73,7 +95,7 @@ class LLMClient:
         max_tokens: int = 300,
         timeout: int = 12,
     ) -> Optional[str]:
-        """Multi-turn chat — rolling session memory like JARVIS."""
+        """Multi-turn chat — rolling session memory for conversational Astra."""
         if not self.enabled or not turns:
             return None
 
@@ -91,9 +113,7 @@ class LLMClient:
             return None
 
         try:
-            if self.provider == "anthropic":
-                return self._anthropic(messages, temperature, max_tokens, timeout)
-            return self._openai(messages, temperature, max_tokens, False, timeout)
+            return self._dispatch_chat(messages, temperature, max_tokens, False, timeout)
         except (
             urllib.error.URLError,
             urllib.error.HTTPError,
@@ -123,9 +143,7 @@ class LLMClient:
         ]
 
         try:
-            if self.provider == "anthropic":
-                return self._anthropic(messages, temperature, max_tokens, timeout)
-            return self._openai(messages, temperature, max_tokens, json_mode, timeout)
+            return self._dispatch_chat(messages, temperature, max_tokens, json_mode, timeout)
         except (
             urllib.error.URLError,
             urllib.error.HTTPError,
@@ -169,6 +187,20 @@ class LLMClient:
             return None
         return self._parse_json(raw)
 
+    def _dispatch_chat(
+        self,
+        messages: List[Dict],
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool,
+        timeout: int,
+    ) -> Optional[str]:
+        if self.provider == "anthropic":
+            return self._anthropic(messages, temperature, max_tokens, timeout)
+        if self.provider == "groq":
+            return self._groq(messages, temperature, max_tokens, json_mode, timeout)
+        return self._openai(messages, temperature, max_tokens, json_mode, timeout)
+
     def _openai(
         self,
         messages: List[Dict],
@@ -177,8 +209,49 @@ class LLMClient:
         json_mode: bool,
         timeout: int,
     ) -> Optional[str]:
+        return self._chat_completions(
+            messages,
+            temperature,
+            max_tokens,
+            json_mode,
+            timeout,
+            api_key=self.openai_key,
+            endpoint=OPENAI_API_URL,
+            model=self.model,
+        )
+
+    def _groq(
+        self,
+        messages: List[Dict],
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool,
+        timeout: int,
+    ) -> Optional[str]:
+        return self._chat_completions(
+            messages,
+            temperature,
+            max_tokens,
+            json_mode,
+            timeout,
+            api_key=self.groq_key,
+            endpoint=GROQ_API_URL,
+            model=self.model,
+        )
+
+    def _chat_completions(
+        self,
+        messages: List[Dict],
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool,
+        timeout: int,
+        api_key: str,
+        endpoint: str,
+        model: str,
+    ) -> Optional[str]:
         payload = {
-            "model": self.model,
+            "model": model,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens,
@@ -187,10 +260,10 @@ class LLMClient:
             payload["response_format"] = {"type": "json_object"}
 
         request = urllib.request.Request(
-            "https://api.openai.com/v1/chat/completions",
+            endpoint,
             data=json.dumps(payload).encode("utf-8"),
             headers={
-                "Authorization": f"Bearer {self.openai_key}",
+                "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
             },
             method="POST",
