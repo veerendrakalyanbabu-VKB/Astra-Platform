@@ -61,6 +61,8 @@ from astra.core.intent.intents import (
     SET_CITY,
     FOCUS_TIMER,
     DETECT_LOCATION,
+    LEARN_TOPIC,
+    LIST_KNOWLEDGE,
     UNKNOWN,
 )
 
@@ -89,6 +91,19 @@ class IntentEngine:
         "how does ",
         "how do ",
         "what is ",
+    )
+
+    LEARN_PREFIXES = (
+        "learn about ",
+        "learn on ",
+        "teach yourself ",
+        "research and learn about ",
+        "research and learn ",
+        "study and learn ",
+        "add knowledge about ",
+        "add knowledge on ",
+        "learn that ",
+        "remember as knowledge ",
     )
 
     DELETE_PREFIXES = ("delete ", "remove ", "erase ")
@@ -186,6 +201,26 @@ class IntentEngine:
                     break
 
             return {"query": query}
+
+        if intent == LEARN_TOPIC:
+            raw = normalized
+            topic = ""
+            content = ""
+
+            if normalized.startswith("learn that "):
+                content = normalized[len("learn that "):].strip()
+            elif normalized.startswith("remember as knowledge "):
+                content = normalized[len("remember as knowledge "):].strip()
+            else:
+                for prefix in self.LEARN_PREFIXES:
+                    if normalized.startswith(prefix):
+                        topic = normalized[len(prefix):].strip()
+                        break
+
+            return {"topic": topic, "content": content, "raw": raw}
+
+        if intent == LIST_KNOWLEDGE:
+            return {}
 
         if intent == CALCULATE:
             expression = normalized

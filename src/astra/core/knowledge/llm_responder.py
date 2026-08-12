@@ -37,6 +37,7 @@ class LLMResponder:
         user_input: str,
         memory_entries: Dict[str, str] = None,
         conversation: list = None,
+        knowledge_snippets: list = None,
     ) -> Optional[str]:
         if not self.enabled or not user_input.strip():
             return None
@@ -46,11 +47,16 @@ class LLMResponder:
             lines = [f"- {key}: {value}" for key, value in list(memory_entries.items())[:8]]
             memory_context = "\nKnown facts about the user:\n" + "\n".join(lines)
 
+        knowledge_context = ""
+        if knowledge_snippets:
+            lines = [f"- {s}" for s in knowledge_snippets[:4]]
+            knowledge_context = "\nTopics Astra has learned:\n" + "\n".join(lines)
+
         turns = conversation_to_turns(conversation)
         turns.append({"role": "user", "content": user_input.strip()})
 
         return self.client.chat_turns(
-            SYSTEM_PROMPT + memory_context,
+            SYSTEM_PROMPT + memory_context + knowledge_context,
             turns,
             temperature=0.7,
             max_tokens=300,

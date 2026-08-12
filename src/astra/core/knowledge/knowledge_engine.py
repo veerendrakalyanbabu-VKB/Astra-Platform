@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 
@@ -110,6 +111,68 @@ class KnowledgeEngine:
 
         results.sort(key=lambda item: item["score"], reverse=True)
         return results
+
+    def add_entry(
+        self,
+        topic: str,
+        content: str,
+        keywords: list = None,
+        source: str = "learned",
+    ) -> dict:
+        topic_slug = re.sub(r"[^\w\s-]", "", topic.lower().strip())
+        topic_slug = re.sub(r"\s+", "_", topic_slug) or "topic"
+        content = content.strip()
+
+        auto_kw = re.findall(r"[a-zA-Z0-9]{3,}", f"{topic} {content}".lower())
+        merged_kw = list(dict.fromkeys((keywords or []) + auto_kw[:12]))
+
+        entries = self.knowledge.setdefault("entries", [])
+        for entry in entries:
+            if entry.get("topic") == topic_slug:
+                entry["content"] = content
+                entry["keywords"] = merged_kw
+                entry["source"] = source
+                self._save()
+                return entry
+
+        new_entry = {
+            "topic": topic_slug,
+            "keywords": merged_kw,
+            "content": content,
+            "source": source,
+        }
+        entries.append(new_entry)
+        self._save()
+        return new_entry
+
+    def _save(self) -> None:
+        self.knowledge_path.parent.mkdir(parents=True, exist_ok=True)
+        self.knowledge_path.write_text(
+            json.dumps(self.knowledge, indent=4),
+            encoding="utf-8",
+        )
+
+    def topic_count(self) -> int:
+        return len(self.knowledge.get("entries", []))
+
+    def list_entries(self) -> list:
+        return list(self.knowledge.get("entries", []))
+
+    def list_learned_topics(self) -> list:
+        return [
+            e["topic"]
+            for e in self.knowledge.get("entries", [])
+            if e.get("source") == "learned"
+        ]
+
+    def stats(self) -> dict:
+        entries = self.knowledge.get("entries", [])
+        learned = sum(1 for e in entries if e.get("source") == "learned")
+        return {
+            "total": len(entries),
+            "learned": learned,
+            "core": len(entries) - learned,
+        }
 
     def best_match(self, query: str) -> str | None:
         results = self.search(query)

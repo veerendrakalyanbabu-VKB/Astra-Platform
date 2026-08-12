@@ -24,6 +24,7 @@ class PipelineOrchestrator:
         logger=None,
         llm_responder=None,
         memory_manager=None,
+        knowledge_engine=None,
         tier_manager=None,
         usage_tracker=None,
         revolution_engine=None,
@@ -44,6 +45,7 @@ class PipelineOrchestrator:
         self.logger = logger
         self.llm_responder = llm_responder
         self.memory_manager = memory_manager
+        self.knowledge_engine = knowledge_engine
         self.tier_manager = tier_manager
         self.usage_tracker = usage_tracker
         self.revolution_engine = revolution_engine
@@ -419,7 +421,20 @@ class PipelineOrchestrator:
 
         conversation = self.context.conversation.all() if self.context else []
 
-        return self.llm_responder.respond(user_input, memory_entries, conversation)
+        knowledge_snippets = []
+        if hasattr(self, "knowledge_engine") and self.knowledge_engine:
+            results = self.knowledge_engine.search(user_input)
+            for hit in results[:3]:
+                topic = hit.get("topic", "")
+                preview = (hit.get("content") or "")[:120]
+                knowledge_snippets.append(f"{topic}: {preview}")
+
+        return self.llm_responder.respond(
+            user_input,
+            memory_entries,
+            conversation,
+            knowledge_snippets,
+        )
 
 
 class _noop_context:

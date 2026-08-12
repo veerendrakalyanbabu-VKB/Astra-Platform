@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 :root{
   --void:#07080c;--void-mid:#0c0e14;--void-panel:#0a0c10;
   --amber:#d4a043;--amber-bright:#e8b85a;--amber-soft:rgba(212,160,67,.12);
@@ -14,10 +14,11 @@
   --border:rgba(212,160,67,.14);--border-soft:rgba(212,160,67,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--void);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--void);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.tactical{font-family:'Orbitron','Rajdhani',sans-serif;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.mono{font-family:'Share Tech Mono',monospace;letter-spacing:.05em}
+.body-text{font-family:'IBM Plex Sans',sans-serif}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(212,160,67,.006) 3px,rgba(212,160,67,.006) 6px);pointer-events:none;z-index:0}
-.tactical{font-family:'Rajdhani',sans-serif;letter-spacing:.14em;text-transform:uppercase}
-.mono{font-family:'Share Tech Mono',monospace;letter-spacing:.06em}
 #app{width:100%;height:100vh;max-height:100vh;display:grid;grid-template-rows:46px 20px 72px minmax(0,1fr) 82px;position:relative;z-index:1;overflow:hidden}
 #rev-ticker{grid-row:2;padding:3px 12px;font-size:.46rem;letter-spacing:.14em;color:rgba(255,170,48,.5);border-bottom:1px solid rgba(255,170,48,.08);white-space:nowrap;overflow:hidden;background:rgba(255,170,48,.02);font-family:'Share Tech Mono',monospace}
 #rev-ticker span{display:inline-block;padding-left:100%;animation:ticker 28s linear infinite}
@@ -196,7 +197,64 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #set-save,#set-wake-toggle{padding:6px 10px;border:1px solid rgba(0,212,255,.32);background:rgba(0,212,255,.06);color:#00d4ff;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.48rem;letter-spacing:.06em;margin-top:6px}
 #wake-status{font-family:'Share Tech Mono',monospace;font-size:.46rem;color:#6ee7b7;margin-top:4px}
 @media (max-width:1280px){#main{grid-template-columns:180px minmax(0,1fr) 280px}}
-@media (max-width:1100px){#main{grid-template-columns:160px minmax(0,1fr) 260px}.kpi-val{font-size:1rem}}
+@media (max-width:1100px){#main{grid-template-columns:160px minmax(0,1fr) 260px}.kpi-val{font-size:1.1rem}}
+/* ——— V2 POLISH: typography · hierarchy · living core ——— */
+#rev-ticker{padding:4px 14px;font-size:.52rem}
+#kpi-row{gap:8px;padding:8px 14px}
+.kpi{padding:10px 8px}
+.kpi-val{font-family:'Orbitron','Rajdhani',sans-serif;font-size:1.28rem}
+.kpi-lbl{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.48rem}
+.kpi-sub{font-size:.46rem}
+.agent-name{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.68rem}
+.agent-role{font-size:.54rem;color:var(--text)}
+.panel-title{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.54rem;letter-spacing:.16em}
+#topbar .logo{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.88rem;letter-spacing:.18em}
+#topbar .node-tag{font-size:.48rem}
+#topbar .clock{font-size:.62rem}
+.chip{font-size:.5rem;padding:4px 8px}
+#main{grid-template-columns:210px minmax(0,1fr) 330px}
+.panel{padding:12px}
+.tele-val{font-family:'Orbitron','Rajdhani',sans-serif;font-size:1.05rem}
+.tele-lbl{font-size:.5rem}
+.gesture-list{font-size:.54rem;line-height:1.7}
+.intel-section{margin-bottom:10px;padding:10px;border:1px solid var(--border-soft);background:rgba(7,8,12,.38)}
+.intel-section.stream{border-color:rgba(94,200,219,.22);background:rgba(94,200,219,.035)}
+.intel-section.quota{border-color:rgba(212,160,67,.24);background:rgba(212,160,67,.035)}
+.intel-section.roi{border-color:rgba(107,201,168,.24);background:rgba(107,201,168,.04)}
+.intel-section.brief{padding:0;border:0;background:transparent;margin-bottom:8px}
+.intel-section.log{flex:1;min-height:0;display:flex;flex-direction:column;border-color:rgba(212,160,67,.18)}
+.intel-head{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.54rem;letter-spacing:.16em;color:rgba(212,160,67,.68);margin-bottom:8px}
+#roi-box{font-size:.66rem;line-height:1.55;padding:0;border:0;background:transparent;color:rgba(200,240,220,.92)}
+#trial-bar,#usage-bar{font-size:.52rem;text-align:left;margin-bottom:6px}
+#brief-box{font-size:.68rem;padding:10px;color:var(--text-bright);max-height:120px}
+#live-feed{font-size:.5rem;padding:8px;max-height:72px}
+.msg{font-size:.78rem;line-height:1.55;padding:9px 11px}
+.msg-lbl{font-size:.48rem}
+.msg-content{font-size:.78rem}
+#command-input{font-size:.72rem;padding:10px 12px}
+.dock-btn{font-size:.54rem;padding:7px 14px}
+#core-state-label{font-size:.56rem}
+#agent-workspace-title{font-size:.62rem}
+#agent-workspace-desc{font-size:.52rem;color:var(--text-dim)}
+#gesture-status{font-size:.58rem}
+#orb-canvas-wrap{inset:36px 0 40px 0;transform:scale(.94);transform-origin:center 50%}
+#orb-header{top:6px;left:6px;right:6px}
+#core-status-bar{padding:6px 12px}
+.orb-radar{position:absolute;left:50%;top:48%;width:min(72vw,520px);height:min(72vw,520px);margin:-36vw 0 0 -36vw;max-width:520px;max-height:520px;border:1px solid rgba(94,200,219,.15);border-radius:50%;pointer-events:none;opacity:0;z-index:1}
+.orb-radar.r2{width:min(58vw,420px);height:min(58vw,420px);margin:-29vw 0 0 -29vw;max-width:420px;max-height:420px;border-color:rgba(232,176,80,.12)}
+#orb-panel[data-state="listening"] .orb-radar{animation:radarPing 2.2s ease-out infinite}
+#orb-panel[data-state="listening"] .orb-radar.r2{animation:radarPing 2.2s ease-out .6s infinite}
+#orb-panel[data-state="speaking"] .orb-radar{border-color:rgba(232,176,80,.25);animation:radarPing 1.4s ease-out infinite}
+@keyframes radarPing{0%{transform:scale(0.55);opacity:.55}100%{transform:scale(1.15);opacity:0}}
+#core-state-dot.executing{background:#ffc860;animation:dotPulse .45s ease-in-out infinite}
+#core-state-dot.success{background:#6bc9a8;box-shadow:0 0 14px rgba(107,201,168,.7);animation:successPulse 1.2s ease-out}
+@keyframes successPulse{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+#orb-panel[data-state="executing"] .scan{opacity:.75;animation-duration:.7s}
+#orb-panel[data-state="error"] .scan{background:linear-gradient(90deg,transparent,rgba(255,80,80,.5),transparent);animation-duration:.5s}
+#privacy-head{font-family:'Orbitron','Rajdhani',sans-serif}
+#privacy-score{font-size:.9rem}
+.shield-row{font-size:.52rem}
+.intel-section.log #chat-msgs{flex:1;min-height:0;padding:4px 2px}
 </style>
 </head>
 <body>
@@ -234,6 +292,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     </div>
     <div id="orb-panel" data-state="idle">
       <div class="scan"></div>
+      <div class="orb-radar"></div>
+      <div class="orb-radar r2"></div>
       <div id="orb-header">
         <div id="core-status-bar">
           <span id="core-state-dot"></span>
@@ -265,26 +325,28 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       </div>
     </div>
     <div class="panel" id="chat-panel">
-      <div class="intel-section">
+      <div class="intel-section stream">
         <div class="intel-head">◈ REVOLUTION STREAM</div>
         <div id="live-feed"></div>
       </div>
-      <div class="intel-section">
+      <div class="intel-section quota">
         <div class="intel-head">◈ COSMIC QUOTA</div>
         <div id="trial-bar"></div>
         <div id="usage-bar"></div>
       </div>
-      <div class="intel-section">
+      <div class="intel-section roi">
         <div class="intel-head">◈ ROI SIGNAL</div>
         <div id="roi-box"></div>
       </div>
       <div id="upgrade-cta" style="display:none"></div>
-      <div class="intel-section">
+      <div class="intel-section brief">
         <div class="intel-head">◈ DAILY BRIEF</div>
         <div id="brief-box"></div>
       </div>
-      <div class="panel-title" style="margin-top:4px">◈ COMMAND LOG</div>
-      <div id="chat-msgs"></div>
+      <div class="intel-section log">
+        <div class="intel-head">◈ COMMAND LOG</div>
+        <div id="chat-msgs"></div>
+      </div>
     </div>
   </div>
   <div id="command-dock">
@@ -364,7 +426,7 @@ function setCoreState(state) {
     idle: "READY FOR COMMAND",
     listening: "LISTENING",
     speaking: "TRANSMITTING",
-    processing: "PROCESSING",
+    processing: "THINKING",
     executing: "EXECUTING",
     success: "COMMAND EXECUTED",
     error: "COMMAND FAILED",
@@ -372,7 +434,8 @@ function setCoreState(state) {
   if (!panel || !label) return;
   if (speaking && state !== "speaking" && state !== "processing") return;
   panel.dataset.state = state;
-  if (dot) dot.className = state === "listening" ? "listening" : state === "speaking" ? "speaking" : (state === "processing" || state === "executing") ? "processing" : state === "error" ? "error" : "";
+  const dotClass = {listening:"listening",speaking:"speaking",processing:"processing",executing:"executing",success:"success",error:"error"};
+  if (dot) dot.className = dotClass[state] || "";
   label.textContent = "ASTRA CORE // " + (labels[state] || state.toUpperCase());
   if (state === "success" || state === "error") {
     setTimeout(() => setCoreState("idle"), state === "success" ? 2200 : 3200);
@@ -542,7 +605,7 @@ function stopSpeakVisualizer() {
 function sendCommand(cmd, src) {
   cmd = normalizeAgentCommand(cmd);
   jarvis.sfxSend();
-  setCoreState("processing");
+  setCoreState("executing");
   try { sessionStorage.setItem("astra_speak_next", "1"); } catch (_) {}
   const targets = [window.top, window.parent];
   for (const w of targets) {
@@ -944,9 +1007,9 @@ for(let i=0;i<STRING_N;i++){
 }
 orb.add(stringGroup);
 const orbitOrbs=[];
-for(let i=0;i<8;i++){
-  const om=new THREE.Mesh(new THREE.SphereGeometry(.032,10,10),new THREE.MeshBasicMaterial({color:i%2?C3:C6,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false}));
-  om.userData={r:1.18+i*.075,sp:.32+i*.11,off:i,yOff:Math.sin(i*1.2)*.22};
+for(let i=0;i<14;i++){
+  const om=new THREE.Mesh(new THREE.SphereGeometry(.028+i%3*0.006,8,8),new THREE.MeshBasicMaterial({color:i%3===0?C3:i%3===1?C6:C1,transparent:true,opacity:.82,blending:THREE.AdditiveBlending,depthWrite:false}));
+  om.userData={r:1.12+i*.062,sp:.28+i*.09,off:i,yOff:Math.sin(i*1.15)*.24};
   orbitOrbs.push(om); orb.add(om);
 }
 const beamPts=new Float32Array(6);
@@ -961,16 +1024,41 @@ for(let i=0;i<starN;i++){const r=3.5+Math.random()*4.5,t=Math.random()*Math.PI*2
 const starGeo=new THREE.BufferGeometry(); starGeo.setAttribute("position",new THREE.BufferAttribute(starPos,3));
 const stars=new THREE.Points(starGeo,new THREE.PointsMaterial({color:C3,size:.014,transparent:true,opacity:.28,blending:THREE.AdditiveBlending,depthWrite:false}));
 scene.add(stars);
-const pN=100+Math.min(STATUS.memory_count*6,120), pos=new Float32Array(pN*3), baseR=new Float32Array(pN), baseDir=new Float32Array(pN*3), pColor=new Float32Array(pN*3);
-for(let i=0;i<pN;i++){const r=1.05+Math.random()*1.9,t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);baseR[i]=r;
+const memDots=STATUS.memory_count||0, knowDots=STATUS.knowledge_count||0;
+const pN=Math.min(420,220+Math.min(memDots*8+knowDots*14,200));
+const pos=new Float32Array(pN*3), baseR=new Float32Array(pN), baseDir=new Float32Array(pN*3), pColor=new Float32Array(pN*3), pPhase=new Float32Array(pN);
+for(let i=0;i<pN;i++){const r=0.92+Math.random()*2.05,t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);baseR[i]=r;pPhase[i]=Math.random()*Math.PI*2;
   const x=r*Math.sin(p)*Math.cos(t),y=r*Math.sin(p)*Math.sin(t),z=r*Math.cos(p);
   pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=z;baseDir[i*3]=x/r;baseDir[i*3+1]=y/r;baseDir[i*3+2]=z/r;
   const mix=Math.random();const c=new THREE.Color().setRGB(0.91*mix+0.37*(1-mix),0.69*mix+0.78*(1-mix),0.31*mix+0.86*(1-mix));
   pColor[i*3]=c.r;pColor[i*3+1]=c.g;pColor[i*3+2]=c.b;}
 const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(pos,3)); pg.setAttribute("color",new THREE.BufferAttribute(pColor,3));
-const particleMat=new THREE.PointsMaterial({size:.024,transparent:true,opacity:.58,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true});
+const particleMat=new THREE.PointsMaterial({size:.028,transparent:true,opacity:.62,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true});
 const particles=new THREE.Points(pg,particleMat);
 scene.add(particles);
+const innerN=90+Math.min(knowDots*6,60), innerPos=new Float32Array(innerN*3), innerCol=new Float32Array(innerN*3), innerPhase=new Float32Array(innerN);
+for(let i=0;i<innerN;i++){
+  const r=0.22+Math.random()*0.42,t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);
+  innerPos[i*3]=r*Math.sin(p)*Math.cos(t);innerPos[i*3+1]=r*Math.sin(p)*Math.sin(t);innerPos[i*3+2]=r*Math.cos(p);
+  innerPhase[i]=Math.random()*Math.PI*2;
+  const mix=Math.random();innerCol[i*3]=0.38+mix*0.55;innerCol[i*3+1]=0.72+mix*0.2;innerCol[i*3+2]=0.88+mix*0.1;
+}
+const innerGeo=new THREE.BufferGeometry();
+innerGeo.setAttribute("position",new THREE.BufferAttribute(innerPos,3));
+innerGeo.setAttribute("color",new THREE.BufferAttribute(innerCol,3));
+const innerNeural=new THREE.Points(innerGeo,new THREE.PointsMaterial({size:.038,transparent:true,opacity:.78,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
+orb.add(innerNeural);
+const synN=48+Math.min(knowDots*4,32), synPos=new Float32Array(synN*6), synOff=new Float32Array(synN);
+for(let i=0;i<synN;i++){
+  const a=Math.floor(Math.random()*pN), b=Math.floor(Math.random()*pN);
+  synPos[i*6]=pos[a*3];synPos[i*6+1]=pos[a*3+1];synPos[i*6+2]=pos[a*3+2];
+  synPos[i*6+3]=pos[b*3];synPos[i*6+4]=pos[b*3+1];synPos[i*6+5]=pos[b*3+2];
+  synOff[i]=Math.random()*Math.PI*2;
+}
+const synGeo=new THREE.BufferGeometry();synGeo.setAttribute("position",new THREE.BufferAttribute(synPos,3));
+const synMat=new THREE.LineBasicMaterial({color:C3,transparent:true,opacity:.12,blending:THREE.AdditiveBlending,depthWrite:false});
+const synapses=new THREE.LineSegments(synGeo,synMat);
+scene.add(synapses);
 
 let t=0, orbSpeed=0.008, zoomPct=0;
 function animate(){
@@ -978,17 +1066,21 @@ function animate(){
   const state = document.getElementById("orb-panel").dataset.state || "idle";
   if (state === "listening") orbSpeed = 0.016;
   else if (state === "speaking") orbSpeed = 0.024;
-  else if (state === "processing" || state === "executing") orbSpeed = 0.022;
+  else if (state === "executing") orbSpeed = 0.028;
+  else if (state === "processing") orbSpeed = 0.022;
   else if (state === "success") orbSpeed = 0.012;
+  else if (state === "error") orbSpeed = 0.018;
   else orbSpeed = ACTIVE ? 0.011 : 0.007;
+  const ringMul = state === "executing" ? 2.4 : state === "processing" ? 1.6 : state === "listening" ? 1.2 : 1;
+  const particleMul = state === "processing" ? 2.2 : state === "executing" ? 1.8 : state === "listening" ? 1.3 : 1;
   t += orbSpeed;
   if(pinchZooming) camera.position.z=orbZoom;
   else camera.position.z+=(orbZoom-camera.position.z)*0.35;
   shell1.rotation.y=t*0.5; shell2.rotation.y=-t*1.1; shell3.rotation.x=t*0.9; shell4.rotation.y=t*1.6;
   sparks.rotation.y=t*0.6;
   stars.rotation.y=t*0.04; stars.rotation.x=Math.sin(t*0.12)*0.02;
-  orbRings.forEach((r,i)=>{r.rotation.z=t*(0.18+i*0.08);});
-  const breath = state === "idle" ? Math.sin(t * 2.2) * 0.035 : Math.sin(t * 3) * (listening || speaking ? 0.11 : 0.05);
+  orbRings.forEach((r,i)=>{r.rotation.z=t*(0.18+i*0.08)*ringMul;});
+  const breath = state === "idle" ? Math.sin(t * 2.2) * 0.035 : Math.sin(t * 3) * (listening || speaking ? 0.11 : state === "executing" ? 0.09 : 0.05);
   const speakBoost = speaking ? voiceLevel * 0.55 : 0;
   const pulse = 1 + voiceLevel * 0.35 + breath + speakBoost * 0.25;
   bloomLayers.forEach((m,i)=>{
@@ -998,8 +1090,18 @@ function animate(){
   });
   sparks.material.opacity=0.55+voiceLevel*0.45+(speaking?0.3:0);
   sparks.material.size=0.038+voiceLevel*0.05+(speaking?0.02:0);
-  coreLight.intensity=0.9+voiceLevel*1.8+(speaking?1.2:0);
-  coreLightCyan.intensity=0.5+voiceLevel*1.2+(speaking?0.9:0);
+  coreLight.intensity=0.9+voiceLevel*1.8+(speaking?1.2:0)+(state==="processing"?0.35:0)+(state==="executing"?0.5:0);
+  coreLightCyan.intensity=0.5+voiceLevel*1.2+(speaking?0.9:0)+(state==="listening"?0.55:0)+(state==="success"?0.4:0);
+  if (state === "error") {
+    coreLight.color.setRGB(1, 0.25 + Math.sin(t * 12) * 0.15, 0.2);
+    coreLight.intensity = 1.4 + Math.sin(t * 14) * 0.6;
+  } else if (state === "success") {
+    coreLight.color.setRGB(0.55, 0.95, 0.72);
+    coreLightCyan.color.setRGB(0.4, 0.92, 1);
+  } else {
+    coreLight.color.setRGB(1, 0.78, 0.38);
+    coreLightCyan.color.setRGB(0.37, 0.78, 0.86);
+  }
   halo.rotation.y=-t*0.35; halo.rotation.x=t*0.15;
   halo.material.opacity=0.08+voiceLevel*0.12+(speaking?0.14:0);
   stringBase.forEach(s=>{
@@ -1011,7 +1113,7 @@ function animate(){
       arr[j*3]=Math.cos(a)*r; arr[j*3+1]=y; arr[j*3+2]=Math.sin(a)*r;
     }
     s.line.geometry.attributes.position.needsUpdate=true;
-    s.line.material.opacity=0.14+voiceLevel*0.35+(speaking?0.28:0)+(state==="processing"?0.1:0);
+    s.line.material.opacity=0.14+voiceLevel*0.35+(speaking?0.28:0)+(state==="processing"||state==="executing"?0.14:0);
   });
   orbitOrbs.forEach(o=>{
     const a=t*o.userData.sp+o.userData.off, r=o.userData.r*particleSpread;
@@ -1038,19 +1140,38 @@ function animate(){
   speakGlowRose.rotation.z=t*1.6;
   speakGlow.rotation.y=t*1.4;
   speakGlowCyan.rotation.y=-t*1.1;
-  particles.rotation.y = t * (0.1 + voiceLevel * 0.25);
-  particles.rotation.x = Math.sin(t * 0.2) * 0.04 * particleSpread;
+  particles.rotation.y = t * (0.1 + voiceLevel * 0.25) * particleMul;
+  particles.rotation.x = Math.sin(t * 0.2 * particleMul) * 0.04 * particleSpread;
   const pArr=pg.attributes.position.array;
   for(let i=0;i<pN;i++){
     const br=baseR[i]*particleSpread;
-    const ang=t*0.35+i*0.08;
-    const wobble=Math.sin(ang)*0.06*voiceLevel;
+    const ang=t*0.35*particleMul+i*0.08+pPhase[i];
+    const wobble=Math.sin(ang)*0.08*voiceLevel+Math.sin(t*1.8+pPhase[i])*0.04*(state==="processing"?1.4:1);
     const s=br+wobble;
     pArr[i*3]=baseDir[i*3]*s;pArr[i*3+1]=baseDir[i*3+1]*s;pArr[i*3+2]=baseDir[i*3+2]*s;
   }
   pg.attributes.position.needsUpdate=true;
-  particleMat.opacity=0.4+voiceLevel*0.48+(speaking?0.22:0);
-  particleMat.size=0.02+voiceLevel*0.035+(speaking?0.018:0);
+  particleMat.opacity=0.42+voiceLevel*0.48+(speaking?0.22:0)+(state==="processing"?0.2:0)+(state==="executing"?0.14:0)+(knowDots>0?0.06:0);
+  particleMat.size=0.022+voiceLevel*0.035+(speaking?0.018:0)+(state==="processing"?0.012:0);
+  const inArr=innerGeo.attributes.position.array;
+  for(let i=0;i<innerN;i++){
+    const pulse=1+Math.sin(t*3.2+innerPhase[i])*0.12+voiceLevel*0.25;
+    const w=Math.sin(t*2.4+innerPhase[i])*0.04*pulse;
+    inArr[i*3]=innerPos[i*3]*(1+w);
+    inArr[i*3+1]=innerPos[i*3+1]*(1+w*0.8);
+    inArr[i*3+2]=innerPos[i*3+2]*(1+w);
+  }
+  innerGeo.attributes.position.needsUpdate=true;
+  innerNeural.material.opacity=0.55+voiceLevel*0.4+(state==="processing"?0.25:0)+(state==="listening"?0.15:0);
+  innerNeural.material.size=0.034+voiceLevel*0.03+Math.sin(t*4)*0.006;
+  synMat.opacity=0.08+voiceLevel*0.2+(state==="processing"?0.14:0)+(state==="executing"?0.1:0)+Math.sin(t*2)*0.04;
+  for(let i=0;i<synN;i++){
+    const flick=0.5+0.5*Math.sin(t*4+synOff[i]);
+    synPos[i*6]=pArr[Math.floor(i%pN)*3]*flick;synPos[i*6+1]=pArr[Math.floor(i%pN)*3+1]*flick;synPos[i*6+2]=pArr[Math.floor(i%pN)*3+2]*flick;
+    const j=(i*7+3)%pN;
+    synPos[i*6+3]=pArr[j*3];synPos[i*6+4]=pArr[j*3+1];synPos[i*6+5]=pArr[j*3+2];
+  }
+  synGeo.attributes.position.needsUpdate=true;
   if(!userZoomed && !pinchZooming && state==="idle" && Date.now()-lastZoomAt>20000)
     orbZoom+=(ZOOM_DEFAULT-orbZoom)*0.008;
   renderer.render(scene, camera);

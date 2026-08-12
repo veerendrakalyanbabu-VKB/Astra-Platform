@@ -254,6 +254,29 @@ class Classifier:
             return CALCULATE
 
         if text.startswith((
+            "learn about ",
+            "learn on ",
+            "teach yourself ",
+            "research and learn ",
+            "study and learn ",
+            "add knowledge ",
+            "learn that ",
+            "remember as knowledge ",
+        )):
+            return LEARN_TOPIC
+
+        if text in (
+            "show knowledge",
+            "list knowledge",
+            "knowledge graph",
+            "what have you learned",
+            "what topics do you know",
+            "show learned topics",
+            "list topics",
+        ):
+            return LIST_KNOWLEDGE
+
+        if text.startswith((
             "tell me about ",
             "explain ",
             "how does ",

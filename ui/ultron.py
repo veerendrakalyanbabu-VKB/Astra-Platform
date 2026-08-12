@@ -85,6 +85,8 @@ def render_astra_interface(
         "encryption": status.get("encryption", "Off"),
         "profile": status.get("profile", "cosmic"),
         "memory_count": status.get("memory_count", 0),
+        "knowledge_count": status.get("knowledge_count", 0),
+        "knowledge_learned": status.get("knowledge_learned", 0),
         "learning_rate": status.get("learning_rate", "0%"),
         "requests": status.get("requests", 0),
         "cloud_sync": status.get("cloud_sync", "Local"),

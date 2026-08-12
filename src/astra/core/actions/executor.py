@@ -112,6 +112,11 @@ class Executor:
 
         if knowledge_engine:
             self.registry.register(AskKnowledgeHandler(knowledge_engine, llm_responder))
+            from astra.core.actions.handlers.learn_topic import LearnTopicHandler
+            from astra.core.actions.handlers.list_knowledge import ListKnowledgeHandler
+
+            self.registry.register(LearnTopicHandler(knowledge_engine, llm_responder))
+            self.registry.register(ListKnowledgeHandler(knowledge_engine))
 
         if tool_manager:
             self.registry.register(CalculateHandler(tool_manager))

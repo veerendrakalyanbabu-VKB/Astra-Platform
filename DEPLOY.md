@@ -21,19 +21,20 @@
 ```powershell
 cd C:\Astra\astra-platform
 
-# If not already initialized:
-git init
+git status
 git add .
-git commit -m "ASTRA Command OS v3.5 — portfolio release"
+git commit -m "ASTRA v3.6 — living neural core, knowledge learning, GitHub polish"
 ```
 
 ### Create repo on GitHub
 
 1. Go to https://github.com/new
-2. Name: `astra-command-os` (or `astra-platform`)
-3. **Private** recommended (until you strip any local paths from docs)
-4. Do **not** add README/gitignore (you already have them)
-5. Copy the repo URL, e.g. `https://github.com/YOUR_USERNAME/astra-command-os.git`
+2. Name: `astra-command-os` (recommended — professional portfolio name)
+3. Description: `AI Command OS — intent-first agent factory with living neural core`
+4. Add topics: `streamlit`, `artificial-intelligence`, `python`, `threejs`, `voice-assistant`
+5. **Public** for portfolio + Streamlit Cloud · **Private** if you prefer
+6. Do **not** add README/gitignore (you already have them)
+7. Copy the repo URL, e.g. `https://github.com/YOUR_USERNAME/astra-command-os.git`
 
 ### Push
 
@@ -43,7 +44,18 @@ git remote add origin https://github.com/YOUR_USERNAME/astra-command-os.git
 git push -u origin main
 ```
 
-If prompted, sign in with GitHub (browser or personal access token).
+If prompted, sign in with GitHub (browser or [personal access token](https://github.com/settings/tokens)).
+
+### Make the repo look professional
+
+After push, on GitHub:
+
+1. **About** (right sidebar) → add description + website (Streamlit URL after deploy)
+2. **Topics** → `ai`, `streamlit`, `python`, `threejs`, `command-line`, `voice-assistant`
+3. Pin the repo on your profile
+4. Enable **Actions** tab — CI runs `pytest` on every push
+
+Replace `YOUR_USERNAME` in README badge URL after first push.
 
 ---
 

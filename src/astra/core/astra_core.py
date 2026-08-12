@@ -190,6 +190,7 @@ class AstraCore:
             logger=self.logger,
             llm_responder=self.llm_responder,
             memory_manager=self.memory,
+            knowledge_engine=self.knowledge,
             tier_manager=self.tiers,
             usage_tracker=self.usage,
             revolution_engine=self.revolution,

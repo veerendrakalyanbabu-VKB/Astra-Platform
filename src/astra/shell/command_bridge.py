@@ -174,6 +174,8 @@ class CommandBridge:
             "llm_label": llm_label,
             "plugins": self.core.plugins.loaded_plugins,
             "memory_count": len(self.core.memory.list_all()),
+            "knowledge_count": self.core.knowledge.topic_count(),
+            "knowledge_learned": len(self.core.knowledge.list_learned_topics()),
             "learning_rate": f"{learning['success_rate'] * 100:.0f}%",
             "requests": metrics["counters"].get("pipeline.requests", 0),
             "pending": self.core.permissions.has_pending(),
