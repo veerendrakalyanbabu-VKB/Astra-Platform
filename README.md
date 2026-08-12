@@ -2,7 +2,7 @@
 
 > **Intent → Agent Factory → Action** — a cinematic AI operating system with a living neural core, not a chatbot wrapper.
 
-[![CI](https://github.com/YOUR_USERNAME/astra-command-os/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/astra-command-os/actions/workflows/ci.yml)
+[![CI](https://github.com/veerendrakalyanbabu-VKB/astra-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/veerendrakalyanbabu-VKB/astra-platform/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
 ![Streamlit](https://img.shields.io/badge/streamlit-1.57+-red)
 ![License MIT](https://img.shields.io/badge/license-MIT-green)

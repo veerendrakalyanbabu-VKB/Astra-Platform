@@ -26,25 +26,30 @@ git add .
 git commit -m "ASTRA v3.6 — living neural core, knowledge learning, GitHub polish"
 ```
 
-### Create repo on GitHub
+### Use ONE repo: `astra-platform`
 
-1. Go to https://github.com/new
-2. Name: `astra-command-os` (recommended — professional portfolio name)
-3. Description: `AI Command OS — intent-first agent factory with living neural core`
-4. Add topics: `streamlit`, `artificial-intelligence`, `python`, `threejs`, `voice-assistant`
-5. **Public** for portfolio + Streamlit Cloud · **Private** if you prefer
-6. Do **not** add README/gitignore (you already have them)
-7. Copy the repo URL, e.g. `https://github.com/YOUR_USERNAME/astra-command-os.git`
+Your local project (`C:\Astra\astra-platform`) is the **current** ASTRA Command OS. The GitHub repos `astra-platform` and `astra-os` from June are **old prototypes** — not this version.
 
-### Push
+**Plan:** Push everything to `astra-platform` and delete `astra-os`.
 
 ```powershell
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/astra-command-os.git
-git push -u origin main
+cd C:\Astra\astra-platform
+
+git remote add origin https://github.com/veerendrakalyanbabu-VKB/astra-platform.git
+# if remote exists: git remote set-url origin https://github.com/veerendrakalyanbabu-VKB/astra-platform.git
+
+git push -u origin main --force
 ```
 
-If prompted, sign in with GitHub (browser or [personal access token](https://github.com/settings/tokens)).
+`--force` replaces the old June code with the real Command OS. Safe because the remote is your stale prototype.
+
+### Delete the old `astra-os` repo (manual)
+
+1. https://github.com/veerendrakalyanbabu-VKB/astra-os
+2. **Settings** → bottom → **Delete this repository**
+3. Type the repo name to confirm
+
+Keep only **astra-platform** as your single ASTRA repo.
 
 ### Make the repo look professional
 
