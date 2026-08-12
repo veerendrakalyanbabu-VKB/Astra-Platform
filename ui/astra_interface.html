@@ -117,9 +117,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #orb-header > *{pointer-events:auto}
 #core-status-bar{display:flex;align-items:center;gap:8px;padding:5px 10px;border:1px solid rgba(255,170,48,.14);background:rgba(0,0,0,.82);min-width:0}
 #agent-workspace{padding:5px 10px;border:1px solid rgba(0,212,255,.12);background:rgba(0,0,0,.72);text-align:right;min-width:0}
-#agent-workspace .panel-title{margin-bottom:2px;font-size:.42rem}
-#agent-workspace-title{font-family:'Rajdhani',sans-serif;font-size:.56rem;font-weight:600;color:#ffcc66;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#agent-workspace-desc{font-family:'IBM Plex Sans',sans-serif;font-size:.46rem;color:rgba(0,212,255,.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#confirm-panel{padding:6px 12px;border:1px solid rgba(110,231,183,.22);background:rgba(0,0,0,.78);text-align:right;min-width:0}
+#confirm-panel .panel-title{margin-bottom:4px;font-size:.42rem;color:rgba(110,231,183,.65)}
+#confirm-status{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.12em;color:#6ee7b7}
+#confirm-status.pending{color:#ffaa30;animation:dotPulse .8s ease-in-out infinite}
+#agent-workspace-title{font-family:'Rajdhani',sans-serif;font-size:.48rem;font-weight:600;color:rgba(94,200,219,.75);letter-spacing:.08em;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#agent-workspace-desc{display:none}
 #core-status-bar{position:static;top:auto;left:auto;right:auto}
 #orb-canvas-wrap canvas{width:100%!important;height:100%!important}
 #core-state-dot{width:7px;height:7px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 8px rgba(110,231,183,.5);flex-shrink:0;transition:background .3s,box-shadow .3s}
@@ -188,7 +191,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .agent-card.booting{opacity:.75;border-style:dashed}
 .agent-card.online.flash{animation:agentOn .55s ease}
 @keyframes agentOn{0%{box-shadow:0 0 0 rgba(110,231,183,0)}50%{box-shadow:0 0 16px rgba(110,231,183,.4)}100%{box-shadow:none}}
-#orb-badge{position:absolute;top:10px;right:52px;z-index:8;font-family:'Share Tech Mono',monospace;font-size:.44rem;letter-spacing:.1em;padding:3px 7px;border:1px solid rgba(110,231,183,.3);color:#6ee7b7;background:rgba(0,0,0,.55);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#orb-badge{position:absolute;top:10px;right:52px;z-index:8;font-family:'Share Tech Mono',monospace;font-size:.46rem;letter-spacing:.08em;padding:4px 8px;border:1px solid rgba(110,231,183,.35);color:#6ee7b7;background:rgba(0,0,0,.65);max-width:160px;line-height:1.35;text-align:center}
 #settings-btn{position:absolute;top:10px;right:92px;z-index:8;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,170,48,.3);background:rgba(0,0,0,.55);color:#ffaa30;cursor:pointer;font-size:13px}
 #settings-panel{display:none;position:absolute;top:46px;right:10px;z-index:20;width:240px;padding:10px;border:1px solid rgba(255,170,48,.22);background:rgba(0,0,0,.94);font-size:.52rem}
 #settings-panel.open{display:block}
@@ -222,6 +225,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .intel-section.quota{border-color:rgba(212,160,67,.24);background:rgba(212,160,67,.035)}
 .intel-section.roi{border-color:rgba(107,201,168,.24);background:rgba(107,201,168,.04)}
 .intel-section.brief{padding:0;border:0;background:transparent;margin-bottom:8px}
+.intel-section.brief #brief-box{padding:10px;border:1px solid rgba(0,212,255,.22);background:rgba(0,212,255,.04);border-radius:0}
 .intel-section.log{flex:1;min-height:0;display:flex;flex-direction:column;border-color:rgba(212,160,67,.18)}
 .intel-head{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.54rem;letter-spacing:.16em;color:rgba(212,160,67,.68);margin-bottom:8px}
 #roi-box{font-size:.66rem;line-height:1.55;padding:0;border:0;background:transparent;color:rgba(200,240,220,.92)}
@@ -234,8 +238,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #command-input{font-size:.72rem;padding:10px 12px}
 .dock-btn{font-size:.54rem;padding:7px 14px}
 #core-state-label{font-size:.56rem}
-#agent-workspace-title{font-size:.62rem}
-#agent-workspace-desc{font-size:.52rem;color:var(--text-dim)}
+#agent-workspace-title{font-size:.5rem}
+#confirm-panel .panel-title{font-family:'Orbitron','Rajdhani',sans-serif}
+#confirm-status{font-size:.64rem}
 #gesture-status{font-size:.58rem}
 #orb-header{top:6px;left:6px;right:6px}
 #core-status-bar{padding:6px 12px}
@@ -298,13 +303,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
           <span id="core-state-dot"></span>
           <span id="core-state-label">ASTRA CORE // READY FOR COMMAND</span>
         </div>
-        <div id="agent-workspace">
-          <div class="panel-title">◆ ACTIVE MODULE</div>
-          <div id="agent-workspace-title">CORE // AI Command Center</div>
-          <div id="agent-workspace-desc">Routes intent through the agent factory</div>
+        <div id="confirm-panel">
+          <div class="panel-title">CONFIRM COMMAND</div>
+          <div id="confirm-status">READY</div>
+          <div id="agent-workspace-title">CORE // Command Center</div>
         </div>
       </div>
-      <div id="orb-badge">LOCAL FIRST · PRIVACY ON</div>
+      <div id="orb-badge">VOICE READY<br/><span style="opacity:.75;font-size:.9em">LOCAL FIRST</span></div>
       <button id="settings-btn" title="Voice settings">⚙</button>
       <div id="settings-panel">
         <div class="panel-title">◈ VOICE SETTINGS</div>
@@ -665,15 +670,24 @@ const privacy = DASH.privacy || STATUS.privacy || {};
 const voicePrompts = DASH.voice_prompts || [];
 const llmLabel = STATUS.llm_label || STATUS.llm || "Standby";
 
-// Privacy fortress
+// Privacy fortress + voice badge
+const confirmEl = document.getElementById("confirm-status");
+if (STATUS.pending) {
+  confirmEl.textContent = "AWAITING YES/NO";
+  confirmEl.className = "pending";
+} else {
+  confirmEl.textContent = "READY";
+  confirmEl.className = "";
+}
+document.getElementById("orb-badge").innerHTML =
+  `VOICE READY<br/><span style="opacity:.75;font-size:.9em">${privacy.encryption === "Active" ? "ENCRYPTED" : "LOCAL FIRST"}</span>`;
+
 if (privacy.shields?.length) {
   document.getElementById("privacy-score").textContent =
     `${privacy.score}/${privacy.max_score} SHIELDS · ${privacy.mode?.toUpperCase() || "STANDARD"}`;
   document.getElementById("privacy-shields").innerHTML = privacy.shields.slice(0, 4).map(s =>
     `<div class="shield-row"><span class="shield-dot${s.active?"":" off"}"></span><span>${esc(s.title)}</span></div>`
   ).join("");
-  document.getElementById("orb-badge").textContent =
-    `VOICE READY · ${privacy.encryption === "Active" ? "ENCRYPTED" : "LOCAL FIRST"}`;
 }
 
 // Live activity feed
@@ -763,14 +777,18 @@ if (roi.headline) {
     (roi.value_saved_week_usd ? ` · ~$${roi.value_saved_week_usd} value this week` : "");
 }
 
-// Trial bar
+// Trial / quota bars — always show cosmic quota in right panel
 const trialEl = document.getElementById("trial-bar");
+const usageEl = document.getElementById("usage-bar");
 if (trial.on_trial) {
   trialEl.textContent = `FREE TRIAL · ${trial.days_remaining} days left · full squad unlocked`;
   if (trial.expiring_soon) trialEl.classList.add("warn");
-} else if (usage.limited) {
-  document.getElementById("usage-bar").textContent =
-    `COSMIC QUOTA · ${usage.used}/${usage.limit} today · ${usage.remaining} left`;
+}
+if (usage.limited) {
+  usageEl.textContent = `COSMIC QUOTA · ${usage.used}/${usage.limit} today · ${usage.remaining} left`;
+  if (usage.remaining <= 10) usageEl.classList.add("warn");
+} else if (!trial.on_trial) {
+  usageEl.textContent = "COSMIC QUOTA · unlimited tier active";
 }
 
 // Manifesto ticker
@@ -798,7 +816,6 @@ function selectAgent(name) {
   const mod = AGENT_MODULES[name] || AGENT_MODULES.CORE;
   squadEl.querySelectorAll(".agent-card").forEach(c => c.classList.toggle("selected", c.dataset.agent === name));
   document.getElementById("agent-workspace-title").textContent = `${name} // ${mod.title}`;
-  document.getElementById("agent-workspace-desc").textContent = mod.desc;
   try { sessionStorage.setItem("astra_agent", name); } catch (_) {}
 }
 squadEl.querySelectorAll(".agent-card").forEach(card => {
@@ -867,7 +884,7 @@ document.getElementById("chips").innerHTML =
 
 // Telemetry — ROI + revolution
 document.getElementById("telemetry").innerHTML = [
-  ["WEEK ROI", "$" + (roi.value_saved_week_usd ?? 0)], ["HRS/WK", (roi.hours_saved_week ?? 0) + "h"],
+  ["ASTB ROI", "$" + (roi.value_saved_week_usd ?? 0)], ["HRS/WK", (roi.hours_saved_week ?? 0) + "h"],
   ["PROTOCOLS", rev.protocols_run ?? 0], ["TASKS/WK", roi.tasks_automated_week ?? 0],
 ].map(([l,v]) => `<div class="tele-item"><div class="tele-val">${v}</div><div class="tele-lbl">${l}</div></div>`).join("");
 
