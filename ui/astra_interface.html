@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500&display=swap');
+:root{
+  --void:#07080c;--void-mid:#0c0e14;--void-panel:#0a0c10;
+  --amber:#d4a043;--amber-bright:#e8b85a;--amber-soft:rgba(212,160,67,.12);
+  --cyan:#5ec8db;--cyan-soft:rgba(94,200,219,.14);
+  --text:#b8b4a8;--text-bright:#d8d4c8;--text-dim:rgba(184,180,168,.55);
+  --success:#6bc9a8;--mentor:#a78bfa;--launch:#e879a8;--ledger:#d4a843;
+  --border:rgba(212,160,67,.14);--border-soft:rgba(212,160,67,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--void);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(212,160,67,.006) 3px,rgba(212,160,67,.006) 6px);pointer-events:none;z-index:0}
+.tactical{font-family:'Rajdhani',sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.mono{font-family:'Share Tech Mono',monospace;letter-spacing:.06em}
+#app{width:100%;height:100vh;max-height:100vh;display:grid;grid-template-rows:46px 20px 72px minmax(0,1fr) 82px;position:relative;z-index:1;overflow:hidden}
+#rev-ticker{grid-row:2;padding:3px 12px;font-size:.46rem;letter-spacing:.14em;color:rgba(255,170,48,.5);border-bottom:1px solid rgba(255,170,48,.08);white-space:nowrap;overflow:hidden;background:rgba(255,170,48,.02);font-family:'Share Tech Mono',monospace}
+#rev-ticker span{display:inline-block;padding-left:100%;animation:ticker 28s linear infinite}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+#kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 12px;border-bottom:1px solid rgba(255,170,48,.1);background:rgba(255,170,48,.015)}
+.kpi{padding:8px 6px;border:1px solid rgba(255,170,48,.14);text-align:center;transition:border-color .25s,box-shadow .25s,transform .25s;background:rgba(0,0,0,.35)}
+.kpi:hover{border-color:rgba(255,170,48,.35);box-shadow:0 0 12px rgba(255,170,48,.08);transform:translateY(-1px)}
+.kpi-val{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:700;color:var(--amber-bright);line-height:1.1}
+.kpi-lbl{font-family:'Rajdhani',sans-serif;font-size:.42rem;letter-spacing:.16em;color:rgba(255,170,48,.5);margin-top:3px}
+.kpi-sub{font-family:'Share Tech Mono',monospace;font-size:.4rem;color:rgba(0,212,255,.45);margin-top:4px;letter-spacing:.04em}
+.kpi.rev{border-color:rgba(110,231,183,.22);background:rgba(110,231,183,.025)}
+.kpi.rev .kpi-val{color:#6ee7b7}
+.agent-card{padding:7px 8px;margin-bottom:5px;border:1px solid var(--border);font-size:.52rem;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s;position:relative;background:rgba(7,8,12,.45);--agent-accent:var(--amber)}
+.agent-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--agent-accent);opacity:.35;transition:opacity .2s}
+.agent-card:hover{border-color:color-mix(in srgb,var(--agent-accent) 40%,transparent);background:color-mix(in srgb,var(--agent-accent) 8%,transparent);box-shadow:0 0 16px color-mix(in srgb,var(--agent-accent) 12%,transparent)}
+.agent-card:hover::before{opacity:.9}
+.agent-card.selected{border-color:color-mix(in srgb,var(--cyan) 50%,transparent);background:var(--cyan-soft);box-shadow:inset 0 0 24px rgba(94,200,219,.06)}
+.agent-card.selected::before{background:var(--cyan);opacity:1}
+.agent-card.online{border-color:color-mix(in srgb,var(--agent-accent) 32%,transparent);background:color-mix(in srgb,var(--agent-accent) 7%,transparent)}
+.agent-card.online::before{opacity:.75}
+.agent-card[data-agent="CORE"]{--agent-accent:#e8b050}
+.agent-card[data-agent="NOVA"]{--agent-accent:#5ec8db}
+.agent-card[data-agent="PILOT"]{--agent-accent:#6bc9a8}
+.agent-card[data-agent="MENTOR"]{--agent-accent:#b8a0f8}
+.agent-card[data-agent="LAUNCH"]{--agent-accent:#f0a0c8}
+.agent-card[data-agent="LEDGER"]{--agent-accent:#d4b050}
+.agent-card[data-agent="MENTOR"] .agent-name{color:#d4c4fc}
+.agent-card[data-agent="LAUNCH"] .agent-name{color:#f5b8d4}
+.agent-card[data-agent="LEDGER"] .agent-name{color:#e8c868}
+.agent-card[data-agent="NOVA"] .agent-name{color:#7ed4e4}
+.agent-card[data-agent="PILOT"] .agent-name{color:#8edcc0}
+.agent-name{font-family:'Rajdhani',sans-serif;color:var(--amber-bright);letter-spacing:.1em;font-weight:600;font-size:.58rem}
+.agent-role{font-family:'IBM Plex Sans',sans-serif;font-size:.48rem;color:var(--text-dim);margin-top:2px;line-height:1.35}
+#brief-box{padding:8px;margin-bottom:6px;border:1px solid rgba(0,212,255,.18);background:rgba(0,212,255,.03);font-size:.58rem;line-height:1.55;color:rgba(232,220,200,.88);max-height:110px;overflow-y:auto}
+.intel-section{margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,170,48,.08)}
+.intel-section:last-child{border-bottom:0}
+.intel-head{font-family:'Rajdhani',sans-serif;font-size:.48rem;letter-spacing:.18em;color:rgba(255,170,48,.55);margin-bottom:5px}
+#upgrade-cta{padding:6px 8px;margin-bottom:6px;border:1px dashed rgba(255,170,48,.35);font-size:.52rem;color:#ffaa30;cursor:pointer;text-align:center;font-family:'Share Tech Mono',monospace}
+#upgrade-cta:hover{background:rgba(255,170,48,.08)}
+#roi-box{padding:8px;margin-bottom:6px;border:1px solid rgba(110,231,183,.22);background:rgba(110,231,183,.03);font-size:.55rem;line-height:1.5;color:rgba(200,255,220,.88)}
+#trial-bar,#usage-bar{font-family:'Share Tech Mono',monospace;font-size:.46rem;color:#6ee7b7;margin-bottom:4px;text-align:right}
+#trial-bar.warn,#usage-bar.warn{color:#ffaa30}
+#mode-badge{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.46rem;letter-spacing:.08em;padding:2px 6px;border:1px solid rgba(0,212,255,.3);color:#00d4ff;margin-left:6px}
+#boot{position:absolute;inset:0;z-index:100;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s;animation:bootDismiss 0.6s ease 1.4s forwards}
+#boot.hide{opacity:0;pointer-events:none;visibility:hidden}
+@keyframes bootDismiss{to{opacity:0;pointer-events:none;visibility:hidden}}
+#boot h1{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.6rem;letter-spacing:.5em;color:#ffaa30;text-shadow:0 0 30px rgba(255,170,48,.5)}
+#boot p{font-family:'IBM Plex Sans',sans-serif;font-size:.62rem;letter-spacing:.12em;color:#00d4ff;margin-top:.5rem;text-align:center;line-height:1.6;max-width:420px}
+#boot .rev-tag{font-family:'Share Tech Mono',monospace;font-size:.48rem;color:rgba(255,170,48,.6);letter-spacing:.3em;margin-top:.4rem}
+.boot-bar{width:180px;height:2px;background:rgba(255,170,48,.15);margin-top:1rem;overflow:hidden}
+.boot-fill{height:100%;width:0;background:linear-gradient(90deg,#ff7700,#ffaa30);animation:bootLoad 1.8s ease forwards}
+@keyframes bootLoad{to{width:100%}}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid rgba(255,170,48,.12);background:rgba(0,0,0,.92);min-height:48px}
+#topbar .logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.22em;color:var(--amber-bright)}
+#topbar .node-tag{font-family:'Share Tech Mono',monospace;font-size:.42rem;color:rgba(0,212,255,.45);margin-left:8px;letter-spacing:.08em}
+#topbar .clock{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:rgba(0,212,255,.7);letter-spacing:.1em}
+.status-chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-family:'Share Tech Mono',monospace;font-size:.48rem;letter-spacing:.06em;padding:3px 7px;border:1px solid rgba(255,170,48,.22);color:rgba(255,204,102,.85);transition:border-color .2s,box-shadow .2s}
+.chip.on{border-color:rgba(110,231,183,.4);color:#6ee7b7;box-shadow:0 0 8px rgba(110,231,183,.12)}
+.chip.pulse{animation:chipPulse 2s ease-in-out infinite}
+@keyframes chipPulse{50%{box-shadow:0 0 10px rgba(0,212,255,.25)}}
+#main{display:grid;grid-template-columns:200px minmax(0,1fr) 318px;gap:0;min-height:0;overflow:hidden}
+#main.mobile{grid-template-columns:1fr;grid-template-rows:300px 1fr}
+.panel{border-right:1px solid rgba(255,170,48,.07);padding:10px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.panel:last-child{border-right:0;border-left:1px solid rgba(255,170,48,.07)}
+.panel-title{font-family:'Rajdhani',sans-serif;font-size:.5rem;font-weight:600;letter-spacing:.2em;color:rgba(255,170,48,.55);margin-bottom:8px}
+.tele-item{margin-bottom:8px;padding:7px 8px;border:1px solid rgba(255,170,48,.1);background:rgba(255,170,48,.02);transition:border-color .2s}
+.tele-item:hover{border-color:rgba(255,170,48,.28)}
+.tele-val{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--amber-bright)}
+.tele-lbl{font-family:'Share Tech Mono',monospace;font-size:.46rem;letter-spacing:.1em;color:rgba(255,170,48,.42);margin-top:2px}
+.gesture-list{font-family:'Share Tech Mono',monospace;font-size:.5rem;line-height:1.65;color:rgba(255,170,48,.48)}
+.gesture-list span{color:#00d4ff}
+#orb-panel{position:relative;border-right:1px solid var(--border-soft);min-height:0;overflow:hidden;
+  background:radial-gradient(ellipse 55% 48% at 50% 40%,rgba(94,200,219,.06),transparent 58%),
+              radial-gradient(ellipse 42% 38% at 52% 46%,rgba(180,100,200,.05),transparent 52%),
+              radial-gradient(ellipse 50% 45% at 48% 44%,rgba(212,160,67,.06),transparent 55%),
+              radial-gradient(ellipse 90% 80% at 50% 50%,#0a0c14,#050608)}
+#orb-panel[data-state="listening"] .scan{opacity:.55;animation-duration:2s}
+#orb-panel[data-state="processing"] .scan{opacity:.7;animation-duration:1.2s}
+#orb-panel[data-state="speaking"] .scan{opacity:.65;animation-duration:.9s;background:linear-gradient(90deg,transparent,rgba(255,170,48,.55),transparent)}
+#orb-panel[data-state="speaking"] #orb-canvas-wrap{filter:drop-shadow(0 0 32px rgba(232,176,80,.75)) drop-shadow(0 0 64px rgba(94,200,219,.4)) drop-shadow(0 0 110px rgba(200,140,220,.25))}
+#orb-panel[data-state="listening"] #orb-canvas-wrap{filter:drop-shadow(0 0 24px rgba(94,200,219,.55)) drop-shadow(0 0 48px rgba(232,176,80,.35))}
+#orb-panel[data-state="processing"] #orb-canvas-wrap{filter:drop-shadow(0 0 20px rgba(232,176,80,.5)) drop-shadow(0 0 40px rgba(94,200,219,.25))}
+#orb-panel[data-state="success"] #orb-canvas-wrap{filter:drop-shadow(0 0 16px rgba(107,201,168,.45)) drop-shadow(0 0 36px rgba(94,200,219,.2))}
+#orb-panel[data-state="error"] #orb-canvas-wrap{filter:drop-shadow(0 0 12px rgba(255,80,80,.35))}
+#main.mobile #orb-panel{height:300px;border-right:0;border-bottom:1px solid rgba(255,170,48,.08)}
+.panel.tele{overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,170,48,.2) transparent}
+#orb-canvas-wrap{position:absolute;inset:52px 0 48px 0;transform:scale(.82);transform-origin:center 52%;
+  filter:drop-shadow(0 0 22px rgba(232,176,80,.42)) drop-shadow(0 0 48px rgba(94,200,219,.22)) drop-shadow(0 0 90px rgba(232,176,80,.1));
+  transition:filter .35s ease}
+#orb-canvas-wrap::before{content:'';position:absolute;inset:8% 12%;z-index:-1;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle at 50% 48%,rgba(232,176,80,.16),rgba(94,200,219,.07) 38%,transparent 68%);
+  animation:coreAura 4.5s ease-in-out infinite}
+@keyframes coreAura{0%,100%{opacity:.65;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
+#orb-header{position:absolute;top:8px;left:8px;right:8px;z-index:8;display:grid;grid-template-columns:1fr auto;gap:6px;pointer-events:none}
+#orb-header > *{pointer-events:auto}
+#core-status-bar{display:flex;align-items:center;gap:8px;padding:5px 10px;border:1px solid rgba(255,170,48,.14);background:rgba(0,0,0,.82);min-width:0}
+#agent-workspace{padding:5px 10px;border:1px solid rgba(0,212,255,.12);background:rgba(0,0,0,.72);text-align:right;min-width:0}
+#agent-workspace .panel-title{margin-bottom:2px;font-size:.42rem}
+#agent-workspace-title{font-family:'Rajdhani',sans-serif;font-size:.56rem;font-weight:600;color:#ffcc66;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#agent-workspace-desc{font-family:'IBM Plex Sans',sans-serif;font-size:.46rem;color:rgba(0,212,255,.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#core-status-bar{position:static;top:auto;left:auto;right:auto}
+#orb-canvas-wrap canvas{width:100%!important;height:100%!important}
+#core-state-dot{width:7px;height:7px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 8px rgba(110,231,183,.5);flex-shrink:0;transition:background .3s,box-shadow .3s}
+#core-state-dot.listening{background:#00d4ff;animation:dotPulse 1s ease-in-out infinite}
+#core-state-dot.speaking{background:#ffaa30;animation:speakDot .35s ease-in-out infinite}
+#core-state-dot.processing{background:#ffaa30;animation:dotPulse .6s ease-in-out infinite}
+#core-state-dot.error{background:#ff5555;box-shadow:0 0 8px rgba(255,85,85,.4)}
+@keyframes speakDot{0%,100%{box-shadow:0 0 6px rgba(255,170,48,.4);transform:scale(1)}50%{box-shadow:0 0 18px rgba(255,170,48,.9);transform:scale(1.35)}}
+@keyframes dotPulse{50%{opacity:.45;transform:scale(1.15)}}
+#core-state-label{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:rgba(0,212,255,.75);letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#cam-preview{position:absolute;bottom:56px;right:10px;width:72px;height:54px;border:1px solid rgba(0,212,255,.35);object-fit:cover;opacity:.55;transform:scaleX(-1);z-index:5;display:none}
+#gesture-hud{position:absolute;bottom:8px;left:10px;right:10px;z-index:6;display:flex;justify-content:space-between;align-items:center}
+#gesture-status{font-family:'Share Tech Mono',monospace;font-size:.54rem;letter-spacing:.08em;color:var(--cyan)}
+#hold-ring{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,170,48,.18);position:relative}
+#mic-btn{position:absolute;top:10px;right:10px;z-index:8;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,170,48,.4);background:rgba(0,0,0,.65);color:#ffaa30;font-size:15px;cursor:pointer;transition:all .2s}
+#mic-btn.on{border-color:#6ee7b7;color:#6ee7b7;box-shadow:0 0 16px rgba(110,231,183,.3);animation:mp .8s infinite}
+@keyframes mp{50%{transform:scale(1.06)}}
+#audio-controls{display:flex;gap:5px;align-items:center}
+.audio-btn{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,170,48,.3);background:rgba(0,0,0,.55);color:#ffaa30;font-size:11px;cursor:pointer;line-height:26px;text-align:center;transition:all .2s}
+.audio-btn.on{border-color:#6ee7b7;color:#6ee7b7;background:rgba(110,231,183,.08)}
+.msg-content{white-space:pre-wrap;word-break:break-word;font-family:'IBM Plex Sans',sans-serif;font-size:.72rem;line-height:1.55}
+#chat-panel{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+#chat-msgs{flex:1;overflow-y:auto;padding:4px 2px;scrollbar-width:thin;scrollbar-color:rgba(255,170,48,.25) transparent;min-height:0}
+.msg{margin-bottom:7px;padding:8px 10px;border:1px solid rgba(255,170,48,.12);background:rgba(0,0,0,.45);animation:msgIn .35s ease;font-size:.72rem;line-height:1.5;transition:border-color .2s}
+.msg:hover{border-color:rgba(255,170,48,.22)}
+.msg.user{border-left:3px solid #00d4ff}
+.msg.astra{border-left:3px solid #ff7700}
+.msg-lbl{font-family:'Share Tech Mono',monospace;font-size:.44rem;letter-spacing:.1em;margin-bottom:4px;opacity:.6}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}}
+#empty-state{text-align:center;padding:20px 10px;color:rgba(255,170,48,.4)}
+#empty-state .big{font-family:'Rajdhani',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.18em;color:rgba(255,170,48,.6);margin-bottom:10px}
+.sug-chip{display:inline-block;margin:3px;padding:5px 9px;border:1px solid rgba(255,170,48,.18);font-family:'Share Tech Mono',monospace;font-size:.54rem;letter-spacing:.04em;cursor:pointer;transition:all .2s}
+.sug-chip:hover{background:rgba(255,170,48,.1);border-color:rgba(255,170,48,.45);color:#fff;box-shadow:0 0 10px rgba(255,170,48,.1)}
+#command-dock{grid-row:5;display:flex;flex-direction:column;gap:5px;padding:6px 10px 8px;border-top:1px solid rgba(255,170,48,.18);background:linear-gradient(180deg,rgba(0,0,0,.92),rgba(0,0,0,.98));z-index:20}
+#dock{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+#dock::-webkit-scrollbar{display:none}
+.dock-btn{flex-shrink:0;padding:6px 12px;border:1px solid rgba(255,170,48,.2);background:rgba(255,170,48,.03);color:#ffcc66;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.5rem;letter-spacing:.12em;cursor:pointer;transition:all .2s;white-space:nowrap}
+.dock-btn:hover{background:rgba(255,170,48,.12);border-color:rgba(255,170,48,.5);box-shadow:0 0 12px rgba(255,170,48,.12)}
+#command-bar{display:flex;align-items:center;gap:8px;min-height:38px}
+#command-input{flex:1;background:rgba(255,170,48,.04);border:1px solid rgba(255,170,48,.22);color:#ffcc66;padding:9px 12px;font-family:'Share Tech Mono',monospace;font-size:.68rem;outline:none;transition:border-color .2s,box-shadow .2s}
+#command-input:focus{border-color:rgba(0,212,255,.45);box-shadow:0 0 14px rgba(0,212,255,.08)}
+#command-input::placeholder{color:rgba(255,170,48,.35)}
+#command-send,#command-mic{width:38px;height:38px;border:1px solid rgba(255,170,48,.3);background:rgba(255,170,48,.08);color:#ffaa30;cursor:pointer;font-size:14px;transition:all .15s;flex-shrink:0}
+#command-send:hover,#command-mic:hover{border-color:rgba(255,170,48,.55);background:rgba(255,170,48,.15)}
+#command-send:active{transform:scale(.96)}
+.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,170,48,.35),transparent);animation:scan 5s linear infinite;pointer-events:none;z-index:2;opacity:.28}
+@keyframes scan{0%{top:12%}100%{top:82%}}
+#main.mobile .panel.tele{display:none}
+#main.mobile #chat-panel{min-height:240px}
+#privacy-panel{padding:8px;margin-bottom:8px;border:1px solid rgba(110,231,183,.2);background:rgba(110,231,183,.025);transition:border-color .2s}
+#privacy-panel:hover{border-color:rgba(110,231,183,.35)}
+#privacy-head{font-family:'Rajdhani',sans-serif;font-size:.5rem;font-weight:600;color:#6ee7b7;letter-spacing:.14em;margin-bottom:6px}
+#privacy-score{font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:700;color:#6ee7b7}
+.shield-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;font-family:'IBM Plex Sans',sans-serif;font-size:.48rem;line-height:1.4;color:rgba(232,220,200,.75)}
+.shield-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0;background:#6ee7b7;box-shadow:0 0 6px rgba(110,231,183,.45)}
+.shield-dot.off{background:rgba(255,170,48,.3);box-shadow:none}
+#live-feed{max-height:64px;overflow:hidden;margin-bottom:6px;border:1px solid rgba(255,170,48,.08);padding:6px;font-family:'Share Tech Mono',monospace;font-size:.46rem;color:rgba(255,170,48,.5)}
+.feed-line{animation:feedIn .45s ease;margin-bottom:2px}
+@keyframes feedIn{from{opacity:0;transform:translateX(-6px)}}
+#voice-hints{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:2px 0;max-width:100%}
+#voice-hints::-webkit-scrollbar{display:none}
+#dock-hints-row{display:flex;align-items:center;gap:6px;min-height:22px}
+#dock-hints-label{font-family:'Rajdhani',sans-serif;font-size:.42rem;letter-spacing:.14em;color:rgba(255,170,48,.4);flex-shrink:0}
+.vhint{font-family:'Share Tech Mono',monospace;font-size:.42rem;padding:3px 6px;border:1px solid rgba(255,170,48,.12);color:rgba(255,170,48,.5);cursor:pointer;transition:all .2s}
+.vhint:hover{border-color:rgba(0,212,255,.4);color:#00d4ff}
+.agent-card.booting{opacity:.75;border-style:dashed}
+.agent-card.online.flash{animation:agentOn .55s ease}
+@keyframes agentOn{0%{box-shadow:0 0 0 rgba(110,231,183,0)}50%{box-shadow:0 0 16px rgba(110,231,183,.4)}100%{box-shadow:none}}
+#orb-badge{position:absolute;top:10px;right:52px;z-index:8;font-family:'Share Tech Mono',monospace;font-size:.44rem;letter-spacing:.1em;padding:3px 7px;border:1px solid rgba(110,231,183,.3);color:#6ee7b7;background:rgba(0,0,0,.55);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#settings-btn{position:absolute;top:10px;right:92px;z-index:8;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,170,48,.3);background:rgba(0,0,0,.55);color:#ffaa30;cursor:pointer;font-size:13px}
+#settings-panel{display:none;position:absolute;top:46px;right:10px;z-index:20;width:240px;padding:10px;border:1px solid rgba(255,170,48,.22);background:rgba(0,0,0,.94);font-size:.52rem}
+#settings-panel.open{display:block}
+#set-name{width:100%;margin:6px 0;padding:6px;background:rgba(255,170,48,.06);border:1px solid rgba(255,170,48,.22);color:#ffcc66;font-family:'Share Tech Mono',monospace;font-size:.56rem}
+.set-row{margin:6px 0;display:flex;align-items:center;gap:6px;font-family:'IBM Plex Sans',sans-serif;font-size:.52rem}
+#set-save,#set-wake-toggle{padding:6px 10px;border:1px solid rgba(0,212,255,.32);background:rgba(0,212,255,.06);color:#00d4ff;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.48rem;letter-spacing:.06em;margin-top:6px}
+#wake-status{font-family:'Share Tech Mono',monospace;font-size:.46rem;color:#6ee7b7;margin-top:4px}
+@media (max-width:1280px){#main{grid-template-columns:180px minmax(0,1fr) 280px}}
+@media (max-width:1100px){#main{grid-template-columns:160px minmax(0,1fr) 260px}.kpi-val{font-size:1rem}}
+</style>
+</head>
+<body>
+<div id="boot">
+  <h1>A S T R A</h1>
+  <div class="rev-tag">AI OPERATING INTELLIGENCE · v3.5</div>
+  <p>INTENT → AGENT FACTORY → ACTION<br/>Initializing command layer…</p>
+  <div class="boot-bar"><div class="boot-fill"></div></div>
+</div>
+<div id="app">
+  <div id="topbar">
+    <div class="logo">ASTRA<span class="node-tag">// AI COMMAND OS · __LAYOUT_LABEL__</span></div>
+    <div class="status-chips" id="chips"></div>
+    <div id="audio-controls">
+      <button class="audio-btn" id="btn-ambient" title="Ambient HUD music">♫</button>
+      <button class="audio-btn on" id="btn-voice" title="Voice responses">🗣</button>
+    </div>
+    <div class="clock" id="clock">--:--</div>
+  </div>
+  <div id="rev-ticker"><span id="rev-text"></span></div>
+  <div id="kpi-row"></div>
+  <div id="main" class="__LAYOUT__">
+    <div class="panel tele">
+      <div id="privacy-panel">
+        <div id="privacy-head">◈ PRIVACY FORTRESS</div>
+        <div id="privacy-score"></div>
+        <div id="privacy-shields"></div>
+      </div>
+      <div class="panel-title">◈ INDUSTRIAL SQUAD <span id="mode-badge"></span></div>
+      <div id="squad-list"></div>
+      <div class="panel-title" style="margin-top:8px">◈ TELEMETRY</div>
+      <div id="telemetry"></div>
+      <div class="panel-title" style="margin-top:12px">◈ GESTURES · PINCH=ZOOM · HOLD 1.5s</div>
+      <div class="gesture-list" id="gesture-legend"></div>
+    </div>
+    <div id="orb-panel" data-state="idle">
+      <div class="scan"></div>
+      <div id="orb-header">
+        <div id="core-status-bar">
+          <span id="core-state-dot"></span>
+          <span id="core-state-label">ASTRA CORE // READY FOR COMMAND</span>
+        </div>
+        <div id="agent-workspace">
+          <div class="panel-title">◆ ACTIVE MODULE</div>
+          <div id="agent-workspace-title">CORE // AI Command Center</div>
+          <div id="agent-workspace-desc">Routes intent through the agent factory</div>
+        </div>
+      </div>
+      <div id="orb-badge">LOCAL FIRST · PRIVACY ON</div>
+      <button id="settings-btn" title="Voice settings">⚙</button>
+      <div id="settings-panel">
+        <div class="panel-title">◈ VOICE SETTINGS</div>
+        <label>Assistant name</label>
+        <input id="set-name" placeholder="Astra"/>
+        <div class="set-row"><input type="checkbox" id="set-wake" checked/> <label for="set-wake">Wake word (Alexa-style)</label></div>
+        <div id="wake-status"></div>
+        <button id="set-save">SAVE</button>
+        <button id="set-wake-toggle">TEST WAKE PHRASES</button>
+      </div>
+      <div id="orb-canvas-wrap"></div>
+      <button id="mic-btn" title="Voice">🎙</button>
+      <video id="cam-preview" autoplay playsinline muted></video>
+      <div id="gesture-hud">
+        <span id="gesture-status">GESTURE STANDBY</span>
+        <div id="hold-ring"></div>
+      </div>
+    </div>
+    <div class="panel" id="chat-panel">
+      <div class="intel-section">
+        <div class="intel-head">◈ REVOLUTION STREAM</div>
+        <div id="live-feed"></div>
+      </div>
+      <div class="intel-section">
+        <div class="intel-head">◈ COSMIC QUOTA</div>
+        <div id="trial-bar"></div>
+        <div id="usage-bar"></div>
+      </div>
+      <div class="intel-section">
+        <div class="intel-head">◈ ROI SIGNAL</div>
+        <div id="roi-box"></div>
+      </div>
+      <div id="upgrade-cta" style="display:none"></div>
+      <div class="intel-section">
+        <div class="intel-head">◈ DAILY BRIEF</div>
+        <div id="brief-box"></div>
+      </div>
+      <div class="panel-title" style="margin-top:4px">◈ COMMAND LOG</div>
+      <div id="chat-msgs"></div>
+    </div>
+  </div>
+  <div id="command-dock">
+    <div id="dock"></div>
+    <div id="dock-hints-row">
+      <span id="dock-hints-label">QUICK</span>
+      <div id="voice-hints"></div>
+    </div>
+    <div id="command-bar">
+      <input id="command-input" placeholder="> TRANSMIT COMMAND" autocomplete="off"/>
+      <button id="command-send" title="Execute">↑</button>
+      <button id="command-mic" title="Voice">🎙</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script type="module">
+const STATUS = __STATUS_JSON__;
+const DASH = __DASHBOARD_JSON__;
+const MESSAGES = __MESSAGES_JSON__;
+const SUGGESTIONS = __SUGGESTIONS_JSON__;
+const QUICK_DOCK = __QUICK_DOCK_JSON__;
+const VOICE = __VOICE_SETTINGS_JSON__;
+const ACTIVE = __LLM_ACTIVE__;
+const LAYOUT = "__LAYOUT__";
+
+const GESTURE_MAP = {
+  palm:["help","PALM · HELP"], point:["what time is it","POINT · TIME"],
+  pinch:["show my memory","PINCH · ZOOM · HOLD=MEMORY"], fist:["sync my memory","FIST · SYNC"],
+  wave:["inspire me","WAVE · INSPIRE"], spread:["organize my morning routine","SPREAD · MORNING"],
+};
+
+const HOLD_MS = 1500, COOLDOWN_MS = 4500;
+let holdGesture=null, holdStart=0, lastFire=0, voiceLevel=0, listening=false, speaking=false, recognition=null;
+let orbZoom=4.85, particleSpread=1, pinchZooming=false, lastZoomAt=0, userZoomed=false;
+const ZOOM_MIN=2.2, ZOOM_MAX=7.8, ZOOM_DEFAULT=4.85;
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y,(a.z||0)-(b.z||0));}
+function applyPinchZoom(pinchDist){
+  const norm=Math.min(1,Math.max(0,(pinchDist-0.02)/0.10));
+  zoomPct=norm;
+  orbZoom=ZOOM_MIN+norm*(ZOOM_MAX-ZOOM_MIN);
+  particleSpread=0.72+norm*0.72;
+  pinchZooming=true;
+  userZoomed=true;
+  lastZoomAt=Date.now();
+  camera.position.z=orbZoom;
+  const pct=Math.round((1-norm)*100);
+  document.getElementById("gesture-status").textContent=`PINCH ZOOM · CORE ${pct}%`;
+}
+function setOrbZoom(z){
+  orbZoom=Math.min(ZOOM_MAX,Math.max(ZOOM_MIN,z));
+  zoomPct=(orbZoom-ZOOM_MIN)/(ZOOM_MAX-ZOOM_MIN);
+  particleSpread=0.72+zoomPct*0.72;
+  lastZoomAt=Date.now();
+  pinchZooming=true;
+  userZoomed=true;
+  camera.position.z=orbZoom;
+}
+
+function esc(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML;}
+
+const AGENT_NAMES = ["CORE","NOVA","PILOT","MENTOR","LAUNCH","LEDGER"];
+const AGENT_MODULES = {
+  CORE: { title: "AI Command Center", desc: "Routes intent through the agent factory", cmd: "show squad" },
+  NOVA: { title: "Research & Intelligence", desc: "Market research, summaries, competitive intel", cmd: "ask nova about AI trends" },
+  PILOT: { title: "Operations & Automation", desc: "Routines, schedules, daily execution", cmd: "organize my morning routine" },
+  MENTOR: { title: "Learning Coach", desc: "Study plans, explain topics, exam prep", cmd: "ask mentor to explain recursion" },
+  LAUNCH: { title: "Startup Strategist", desc: "GTM wedge, MVP scope, founder ops", cmd: "ask launch for pitch ideas" },
+  LEDGER: { title: "Finance Analyst", desc: "Runway math, pricing, unit economics", cmd: "ask ledger about runway" },
+};
+
+function setCoreState(state) {
+  const panel = document.getElementById("orb-panel");
+  const dot = document.getElementById("core-state-dot");
+  const label = document.getElementById("core-state-label");
+  const labels = {
+    idle: "READY FOR COMMAND",
+    listening: "LISTENING",
+    speaking: "TRANSMITTING",
+    processing: "PROCESSING",
+    executing: "EXECUTING",
+    success: "COMMAND EXECUTED",
+    error: "COMMAND FAILED",
+  };
+  if (!panel || !label) return;
+  if (speaking && state !== "speaking" && state !== "processing") return;
+  panel.dataset.state = state;
+  if (dot) dot.className = state === "listening" ? "listening" : state === "speaking" ? "speaking" : (state === "processing" || state === "executing") ? "processing" : state === "error" ? "error" : "";
+  label.textContent = "ASTRA CORE // " + (labels[state] || state.toUpperCase());
+  if (state === "success" || state === "error") {
+    setTimeout(() => setCoreState("idle"), state === "success" ? 2200 : 3200);
+  }
+}
+setCoreState("idle");
+
+function normalizeAgentCommand(raw) {
+  const t = String(raw || "").trim();
+  if (!t) return t;
+  const m = t.match(/^([A-Za-z]+)\s*[,:\-]\s*(.+)$/);
+  if (m && AGENT_NAMES.includes(m[1].toUpperCase())) {
+    return `ask ${m[1].toLowerCase()} ${m[2].trim()}`;
+  }
+  return t;
+}
+
+// ——— ASTRA AUDIO ENGINE ———
+const AstraAudio = {
+  ctx: null, ambientOn: false, voiceOn: true, ambientNodes: [],
+  ensureCtx() {
+    if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (this.ctx.state === "suspended") this.ctx.resume();
+    return this.ctx;
+  },
+  tone(freq, dur, type="sine", vol=0.07, delay=0) {
+    const ctx = this.ensureCtx();
+    const t = ctx.currentTime + delay;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g).connect(ctx.destination);
+    o.start(t); o.stop(t + dur + 0.05);
+  },
+  sfxSend() {
+    this.tone(880, 0.07, "sine", 0.05);
+    this.tone(1320, 0.1, "sine", 0.035, 0.05);
+  },
+  sfxResponse() {
+    this.tone(392, 0.12, "triangle", 0.06);
+    this.tone(523, 0.15, "sine", 0.05, 0.08);
+    this.tone(659, 0.22, "sine", 0.04, 0.16);
+  },
+  sfxBoot() {
+    this.tone(220, 0.4, "sine", 0.04);
+    this.tone(440, 0.35, "triangle", 0.035, 0.15);
+    this.tone(880, 0.5, "sine", 0.03, 0.35);
+  },
+  sfxListen() { this.tone(660, 0.08, "square", 0.03); },
+  startAmbient() {
+    if (this.ambientOn) return;
+    const ctx = this.ensureCtx();
+    this.ambientOn = true;
+    const master = ctx.createGain();
+    master.gain.value = 0.028;
+    master.connect(ctx.destination);
+    [[55, "sine", 1], [110, "triangle", 0.45], [164.81, "sine", 0.25]].forEach(([f, type, vol]) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = type; o.frequency.value = f;
+      g.gain.value = vol;
+      o.connect(g).connect(master);
+      o.start();
+      this.ambientNodes.push(o);
+    });
+    const lfo = ctx.createOscillator();
+    const lfoG = ctx.createGain();
+    lfo.frequency.value = 0.08;
+    lfoG.gain.value = 8;
+    lfo.connect(lfoG);
+    if (this.ambientNodes[0]) lfoG.connect(this.ambientNodes[0].frequency);
+    lfo.start();
+    this.ambientNodes.push(lfo, lfoG, master);
+  },
+  stopAmbient() {
+    this.ambientNodes.forEach(n => { try { n.stop(); } catch (_) {} });
+    this.ambientNodes = [];
+    this.ambientOn = false;
+  },
+  toggleAmbient(btn) {
+    if (this.ambientOn) { this.stopAmbient(); btn.classList.remove("on"); }
+    else { this.ensureCtx(); this.startAmbient(); btn.classList.add("on"); }
+  },
+  cleanForSpeech(text) {
+    return String(text || "")
+      .replace(/[☀◈•🔭⚡📚🚀📊🎙✋👆👌✊✌️⬆]/g, "")
+      .replace(/\*\*/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 420);
+  },
+  pickVoice() {
+    const voices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith("en"));
+    const style = (VOICE.voice_style || "female").toLowerCase();
+    const femaleRx = /zira|samantha|jenny|aria|susan|hazel|linda|natural|female|google uk english female|microsoft zira|eva|salli|joanna|kimberly|sonia|libby|neural|victoria|kate|serena|sara/i;
+    const maleRx = /david|mark|daniel|male|guy|ryan|brian|james|george/i;
+    if (style === "female") {
+      return voices.find(v => femaleRx.test(v.name))
+        || voices.find(v => !maleRx.test(v.name))
+        || voices.find(v => v.lang.startsWith("en"))
+        || voices[0];
+    }
+    if (style === "male") {
+      return voices.find(v => maleRx.test(v.name)) || voices[0];
+    }
+    return voices[0];
+  },
+  speak(text) {
+    if (!this.voiceOn || !window.speechSynthesis) return;
+    const clean = this.cleanForSpeech(text);
+    if (!clean || clean.length < 2) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(clean);
+    const style = (VOICE.voice_style || "female").toLowerCase();
+    u.rate = style === "female" ? 0.94 : 0.92;
+    u.pitch = style === "female" ? 1.05 : 0.88;
+    u.volume = 0.92;
+    const v = this.pickVoice();
+    if (v) u.voice = v;
+    speaking = true;
+    setCoreState("speaking");
+    startSpeakVisualizer(clean.length);
+    u.onboundary = () => { voiceLevel = Math.min(1, voiceLevel + 0.22); };
+    u.onend = () => {
+      speaking = false;
+      stopSpeakVisualizer();
+      setCoreState("success");
+    };
+    u.onerror = () => {
+      speaking = false;
+      stopSpeakVisualizer();
+      setCoreState("idle");
+    };
+    window.speechSynthesis.speak(u);
+  },
+};
+const astraAudio = AstraAudio;
+const jarvis = astraAudio;
+function warmSpeechVoices() {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.getVoices();
+}
+warmSpeechVoices();
+if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = warmSpeechVoices;
+
+let speakVizTimer = null;
+function startSpeakVisualizer(charLen) {
+  stopSpeakVisualizer();
+  const dur = Math.min(14000, Math.max(1800, charLen * 55));
+  const start = performance.now();
+  speakVizTimer = setInterval(() => {
+    const elapsed = performance.now() - start;
+    const wave = Math.sin(elapsed * 0.018) * 0.35 + Math.sin(elapsed * 0.031) * 0.2;
+    const envelope = Math.min(1, elapsed / 400) * Math.max(0, 1 - (elapsed - dur) / 600);
+    voiceLevel = Math.max(voiceLevel * 0.82, (0.35 + wave) * envelope + Math.random() * 0.12);
+    if (elapsed > dur + 400) stopSpeakVisualizer();
+  }, 40);
+}
+function stopSpeakVisualizer() {
+  if (speakVizTimer) { clearInterval(speakVizTimer); speakVizTimer = null; }
+  voiceLevel *= 0.5;
+}
+
+function sendCommand(cmd, src) {
+  cmd = normalizeAgentCommand(cmd);
+  jarvis.sfxSend();
+  setCoreState("processing");
+  try { sessionStorage.setItem("astra_speak_next", "1"); } catch (_) {}
+  const targets = [window.top, window.parent];
+  for (const w of targets) {
+    try {
+      if (!w || w === window) continue;
+      const u = new URL(w.location.href);
+      u.searchParams.set("astra_cmd", cmd);
+      u.searchParams.set("astra_src", src);
+      w.location.href = u.toString();
+      return;
+    } catch (_) {}
+  }
+  try {
+    const u = new URL(window.location.href);
+    u.searchParams.set("astra_cmd", cmd);
+    u.searchParams.set("astra_src", src);
+    window.location.href = u.toString();
+  } catch (_) {
+    setCoreState("error");
+    document.getElementById("gesture-status").textContent = "CMD FAILED · use command dock";
+  }
+}
+
+// Boot — skip on return visits for speed
+try {
+  if (sessionStorage.getItem("astra_booted") === "1") {
+    document.getElementById("boot").classList.add("hide");
+  } else {
+    sessionStorage.setItem("astra_booted", "1");
+    setTimeout(() => {
+      document.getElementById("boot").classList.add("hide");
+      astraAudio.sfxBoot();
+    }, 650);
+  }
+} catch (_) {
+  setTimeout(() => {
+    document.getElementById("boot").classList.add("hide");
+    astraAudio.sfxBoot();
+  }, 1100);
+}
+
+// Clock
+function tickClock() {
+  const d = new Date();
+  document.getElementById("clock").textContent = d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+tickClock(); setInterval(tickClock, 1000);
+
+// Dashboard state (declare ALL upfront — prevents ReferenceError killing the UI)
+const rev = DASH.revolution || {};
+const roi = DASH.roi || {};
+const trial = DASH.trial || {};
+const usage = DASH.usage || {};
+const tier = DASH.tier || {};
+const kpis = DASH.kpis || {};
+const portalUrl = DASH.upgrade_url || "http://localhost:8503";
+const privacy = DASH.privacy || STATUS.privacy || {};
+const voicePrompts = DASH.voice_prompts || [];
+const llmLabel = STATUS.llm_label || STATUS.llm || "Standby";
+
+// Privacy fortress
+if (privacy.shields?.length) {
+  document.getElementById("privacy-score").textContent =
+    `${privacy.score}/${privacy.max_score} SHIELDS · ${privacy.mode?.toUpperCase() || "STANDARD"}`;
+  document.getElementById("privacy-shields").innerHTML = privacy.shields.slice(0, 4).map(s =>
+    `<div class="shield-row"><span class="shield-dot${s.active?"":" off"}"></span><span>${esc(s.title)}</span></div>`
+  ).join("");
+  document.getElementById("orb-badge").textContent =
+    `VOICE READY · ${privacy.encryption === "Active" ? "ENCRYPTED" : "LOCAL FIRST"}`;
+}
+
+// Live activity feed
+const feedEl = document.getElementById("live-feed");
+const feedLines = [
+  `SYS · ${llmLabel} · ${STATUS.requests || 0} commands processed`,
+  privacy.headline || "Local-first command OS — your data stays on device.",
+  rev.tagline || "Intent → Agents → Action",
+];
+let feedIdx = 0;
+function pushFeed(line) {
+  const div = document.createElement("div");
+  div.className = "feed-line";
+  div.textContent = "◈ " + line;
+  feedEl.prepend(div);
+  while (feedEl.children.length > 4) feedEl.lastChild.remove();
+}
+feedLines.forEach(l => pushFeed(l));
+setInterval(() => { pushFeed(feedLines[feedIdx++ % feedLines.length]); }, 9000);
+
+// Voice hints — populate command dock input
+const hintsEl = document.getElementById("voice-hints");
+const cmdInput = document.getElementById("command-input");
+(voicePrompts.length ? voicePrompts : [
+  ["NOVA","summarize AI trends"],["PILOT","morning brief"],["CORE","revolution status"]
+]).forEach(([agent, q]) => {
+  const h = document.createElement("span");
+  h.className = "vhint";
+  h.textContent = `${agent}: ${q}`;
+  h.onclick = () => {
+    cmdInput.value = `${agent}, ${q}`;
+    cmdInput.focus();
+  };
+  hintsEl.appendChild(h);
+});
+
+function submitCommand() {
+  const v = cmdInput.value.trim();
+  if (v) sendCommand(v, "command-dock");
+}
+document.getElementById("command-send").onclick = submitCommand;
+cmdInput.onkeydown = e => { if (e.key === "Enter") submitCommand(); };
+cmdInput.placeholder = `> ${(VOICE.assistant_name || "Astra").toUpperCase()} · TRANSMIT COMMAND`;
+
+// Voice settings panel
+const settingsPanel = document.getElementById("settings-panel");
+const setName = document.getElementById("set-name");
+const setWake = document.getElementById("set-wake");
+setName.value = VOICE.assistant_name || "Astra";
+setWake.checked = VOICE.wake_enabled !== false;
+document.getElementById("wake-status").textContent =
+  "Wake: " + (VOICE.launch_phrases || ["hey astra"]).slice(0, 2).join(" · ");
+
+document.getElementById("settings-btn").onclick = () => {
+  settingsPanel.classList.toggle("open");
+};
+document.getElementById("set-save").onclick = () => {
+  const name = setName.value.trim() || "Astra";
+  sendCommand(`set assistant name to ${name}`, "settings");
+  if (setWake.checked) sendCommand("turn wake word on", "settings");
+  else sendCommand("turn wake word off", "settings");
+  settingsPanel.classList.remove("open");
+};
+document.getElementById("set-wake-toggle").onclick = () => {
+  sendCommand("show voice settings", "settings");
+};
+
+// KPI row — telemetry with secondary readouts
+const successRate = STATUS.learning_rate || "0%";
+const automations = kpis.automation ?? rev.automation_index ?? 0;
+const hoursSaved = (kpis.hours_saved ?? roi.hours_saved_week ?? 0);
+const quotaVal = usage.limited ? `${usage.used}/${usage.limit}` : (trial.on_trial ? trial.days_remaining + "d" : "—");
+const quotaSub = usage.limited ? `${usage.remaining} remaining` : (trial.on_trial ? "trial active" : "unlimited tier");
+document.getElementById("kpi-row").innerHTML = [
+  [automations, "AUTOMATIONS", rev.protocols_run ? `${rev.protocols_run} protocols run` : "this session", false],
+  [hoursSaved + "h", "TIME SAVED", "estimated impact", true],
+  [successRate, "SUCCESS RATE", STATUS.requests ? `${STATUS.requests} commands` : "session", false],
+  [quotaVal, trial.on_trial ? "TRIAL" : "COSMIC QUOTA", quotaSub, false],
+].map(([v,l,sub,highlight]) =>
+  `<div class="kpi${highlight?" rev":""}"><div class="kpi-val">${esc(String(v))}</div><div class="kpi-lbl">${l}</div><div class="kpi-sub">${esc(sub)}</div></div>`
+).join("");
+
+// ROI box
+if (roi.headline) {
+  document.getElementById("roi-box").innerHTML =
+    "💎 <strong>ROI</strong> · " + esc(roi.headline) +
+    (roi.value_saved_week_usd ? ` · ~$${roi.value_saved_week_usd} value this week` : "");
+}
+
+// Trial bar
+const trialEl = document.getElementById("trial-bar");
+if (trial.on_trial) {
+  trialEl.textContent = `FREE TRIAL · ${trial.days_remaining} days left · full squad unlocked`;
+  if (trial.expiring_soon) trialEl.classList.add("warn");
+} else if (usage.limited) {
+  document.getElementById("usage-bar").textContent =
+    `COSMIC QUOTA · ${usage.used}/${usage.limit} today · ${usage.remaining} left`;
+}
+
+// Manifesto ticker
+const manifesto = rev.manifesto || "Intent flows through agent factories — not app silos.";
+document.getElementById("rev-text").textContent = "◈ " + manifesto + " ◈ " + (rev.tagline || "Intent → Agents → Action") + " ◈ ";
+
+// Mode badge
+if (DASH.mode) document.getElementById("mode-badge").textContent = DASH.mode.label.toUpperCase();
+
+// Squad — interactive agent modules
+const squad = DASH.squad || [];
+const squadEl = document.getElementById("squad-list");
+const MODULE_ROLES = {
+  CORE: "Chief Orchestrator", NOVA: "Research & Intel", PILOT: "Operations",
+  MENTOR: "Learning Coach", LAUNCH: "Startup Strategist", LEDGER: "Finance Analyst",
+};
+squadEl.innerHTML = squad.map(a =>
+  `<div class="agent-card booting online" data-agent="${a.name}" data-id="${a.id||a.name.toLowerCase()}" style="--agent-accent:${a.color||'#d4a043'}">
+    <span class="agent-name">${a.emoji} ${a.name}</span>
+    <div class="agent-role">${MODULE_ROLES[a.name] || a.title || ""}</div>
+  </div>`
+).join("");
+
+function selectAgent(name) {
+  const mod = AGENT_MODULES[name] || AGENT_MODULES.CORE;
+  squadEl.querySelectorAll(".agent-card").forEach(c => c.classList.toggle("selected", c.dataset.agent === name));
+  document.getElementById("agent-workspace-title").textContent = `${name} // ${mod.title}`;
+  document.getElementById("agent-workspace-desc").textContent = mod.desc;
+  try { sessionStorage.setItem("astra_agent", name); } catch (_) {}
+}
+squadEl.querySelectorAll(".agent-card").forEach(card => {
+  card.addEventListener("click", () => {
+    selectAgent(card.dataset.agent);
+    const mod = AGENT_MODULES[card.dataset.agent];
+    if (mod) cmdInput.value = mod.cmd.split(" ").slice(0, 3).join(" ") + "…";
+  });
+});
+try {
+  const saved = sessionStorage.getItem("astra_agent") || "CORE";
+  selectAgent(saved);
+} catch (_) { selectAgent("CORE"); }
+let bootIdx = 0;
+function bootNextAgent() {
+  const cards = squadEl.querySelectorAll(".agent-card");
+  if (bootIdx >= cards.length) return;
+  const card = cards[bootIdx++];
+  card.classList.remove("booting");
+  card.classList.add("online", "flash");
+  pushFeed(`${card.dataset.agent} online · reporting for duty`);
+  setTimeout(bootNextAgent, 320);
+}
+setTimeout(bootNextAgent, 2400);
+
+// Morning brief
+const brief = DASH.brief || {};
+const briefEl = document.getElementById("brief-box");
+const briefLabel = brief.label || (brief.tier === "cosmic" ? "DAILY BRIEF" : "MORNING BRIEF");
+if (brief.available && brief.lines?.length) {
+  briefEl.innerHTML = "☀ <strong>" + esc(briefLabel) + "</strong><br/>" + brief.lines.map(l=>"• "+esc(l)).join("<br/>");
+} else if (brief.message) {
+  briefEl.innerHTML = esc(brief.message);
+} else {
+  briefEl.innerHTML = "☀ Say <span style='color:#ffaa30'>morning brief</span> for weather, squad, and your day.";
+}
+
+// Upgrade CTA — only when quota is low
+if (tier.id === "cosmic" && !trial.on_trial && tier.upgrade_options?.length
+    && usage.limited && usage.remaining !== null && usage.remaining <= 10) {
+  const cta = document.getElementById("upgrade-cta");
+  cta.style.display = "block";
+  cta.textContent = `⬆ ${usage.remaining} commands left today · optional Campus trial → Portal`;
+  cta.onclick = () => window.open(portalUrl + "?plan=campus", "_blank");
+} else if (trial.expiring_soon) {
+  const cta = document.getElementById("upgrade-cta");
+  cta.style.display = "block";
+  cta.textContent = "⬆ TRIAL ENDING · Subscribe to keep full squad → Portal";
+  cta.onclick = () => window.open(portalUrl, "_blank");
+}
+
+// Chips
+const loc = STATUS.location || DASH.location || {};
+const locChip = loc.city
+  ? `<span class="chip on" title="${esc(loc.label || loc.city)}">${esc(loc.city.toUpperCase())}${loc.source === "ip" ? " · AUTO" : ""}</span>`
+  : (loc.auto_enabled !== false
+      ? `<span class="chip">LOC PENDING</span>`
+      : `<span class="chip">LOC OFF</span>`);
+const stageChip = rev.stage ? `${rev.stage.symbol} ${rev.stage.name.toUpperCase()}` : "IR v3";
+document.getElementById("chips").innerHTML =
+  `<span class="chip on">${stageChip}</span>` +
+  `<span class="chip ${ACTIVE?"on":""}">${esc(llmLabel.toUpperCase())}</span>` +
+  locChip +
+  `<span class="chip on">PRIVACY ${privacy.score || 0}/${privacy.max_score || 5}</span>` +
+  `<span class="chip">${STATUS.profile.toUpperCase()}</span>`;
+
+// Telemetry — ROI + revolution
+document.getElementById("telemetry").innerHTML = [
+  ["WEEK ROI", "$" + (roi.value_saved_week_usd ?? 0)], ["HRS/WK", (roi.hours_saved_week ?? 0) + "h"],
+  ["PROTOCOLS", rev.protocols_run ?? 0], ["TASKS/WK", roi.tasks_automated_week ?? 0],
+].map(([l,v]) => `<div class="tele-item"><div class="tele-val">${v}</div><div class="tele-lbl">${l}</div></div>`).join("");
+
+// Gesture legend
+document.getElementById("gesture-legend").innerHTML = Object.entries(GESTURE_MAP)
+  .map(([k,v]) => `<div><span>${k.toUpperCase()}</span> → ${v[1]}</div>`).join("");
+
+// Dock
+document.getElementById("dock").innerHTML = QUICK_DOCK
+  .map(([l,c]) => `<button class="dock-btn" data-cmd="${c}">${l}</button>`).join("");
+document.getElementById("dock").onclick = e => {
+  if (e.target.dataset.cmd) sendCommand(e.target.dataset.cmd, "dock");
+};
+
+// Chat
+const chatEl = document.getElementById("chat-msgs");
+function renderMessages() {
+  if (!MESSAGES.length) {
+    chatEl.innerHTML = `<div id="empty-state"><div class="big">◈ INDUSTRIAL REVOLUTION ◈</div>
+      <p style="font-size:.58rem;margin-bottom:8px;color:rgba(0,212,255,.6)">${esc(rev.tagline || "Intent → Agents → Action")}</p>
+      <p style="font-size:.55rem;margin-bottom:12px">Voice · Gestures · Protocols · Type below</p>
+      <div id="sugs"></div></div>`;
+    const sugs = document.getElementById("sugs");
+    (SUGGESTIONS.length ? SUGGESTIONS.slice(0,4) : [
+      {command:"show weather"},{command:"morning brief"},{command:"industrial revolution"},{command:"show squad"}
+    ]).forEach(s => {
+      const chip = document.createElement("div");
+      chip.className = "sug-chip";
+      chip.textContent = s.command || s;
+      chip.onclick = () => sendCommand(s.command || s, "suggest");
+      sugs.appendChild(chip);
+    });
+    return;
+  }
+  chatEl.innerHTML = MESSAGES.map(m =>
+    `<div class="msg ${m.role==="user"?"user":"astra"}"><div class="msg-lbl">${m.role==="user"?"YOU":"ASTRA"}</div><div class="msg-content">${esc(m.content)}</div></div>`
+  ).join("");
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+renderMessages();
+
+// Speak latest Astra response after command (JARVIS voice)
+(function speakLatestResponse() {
+  try {
+    if (sessionStorage.getItem("astra_speak_next") !== "1") return;
+    sessionStorage.removeItem("astra_speak_next");
+  } catch (_) { return; }
+  const last = MESSAGES.filter(m => m.role === "astra").pop();
+  if (!last?.content) return;
+  setTimeout(() => {
+    jarvis.sfxResponse();
+    jarvis.speak(last.content);
+  }, 600);
+})();
+
+// ——— THREE.JS ORB ———
+const wrap = document.getElementById("orb-canvas-wrap");
+const W = wrap.clientWidth || 400, H = wrap.clientHeight || 400;
+const scene = new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x050810,0.042);
+const camera = new THREE.PerspectiveCamera(48, W/H, 0.1, 100);
+camera.position.set(0, 0.08, orbZoom);
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:"high-performance"});
+renderer.setClearColor(0x050810,0);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+wrap.appendChild(renderer.domElement);
+
+const C1=0xffc860, C2=0xe89040, C3=0x6ed8ee, C4=0xb8a8f8, C5=0xf0b0d0, C6=0xd890d8;
+function lineMat(c,o){return new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false});}
+function wSphereGlow(r,d,c,mainO,glowO){
+  const g=new THREE.IcosahedronGeometry(r,d), edges=new THREE.EdgesGeometry(g), grp=new THREE.Group();
+  const outer=new THREE.LineSegments(edges,lineMat(c,glowO||mainO*0.45));
+  outer.scale.setScalar(1.06);
+  const mid=new THREE.LineSegments(edges,lineMat(c,mainO*0.55));
+  mid.scale.setScalar(1.03);
+  const inner=new THREE.LineSegments(edges,lineMat(c,mainO));
+  grp.add(outer,mid,inner);
+  return grp;
+}
+const orb = new THREE.Group(); scene.add(orb);
+const shell1=wSphereGlow(1.12,2,C1,ACTIVE?0.95:0.62,0.28);
+const shell2=wSphereGlow(.88,1,C2,.42,.18), shell3=wSphereGlow(.64,1,C3,.34,.14), shell4=wSphereGlow(.44,0,C4,.28,.1);
+orb.add(shell1,shell2,shell3,shell4);
+const bloomLayers=[];
+[[1.38,C1,.06],[1.52,C3,.04],[1.68,C6,.025],[1.85,C4,.015]].forEach(([r,c,o])=>{
+  const m=new THREE.Mesh(new THREE.SphereGeometry(r,28,28),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,side:THREE.BackSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+  bloomLayers.push(m); orb.add(m);
+});
+const vtxGeo=new THREE.IcosahedronGeometry(1.12,2), vtxAttr=vtxGeo.attributes.position;
+const sparkN=vtxAttr.count, sparkPos=new Float32Array(sparkN*3), sparkCol=new Float32Array(sparkN*3);
+for(let i=0;i<sparkN;i++){
+  sparkPos[i*3]=vtxAttr.getX(i);sparkPos[i*3+1]=vtxAttr.getY(i);sparkPos[i*3+2]=vtxAttr.getZ(i);
+  const mix=i%3; sparkCol[i*3]=mix===0?1:mix===1?0.43:0.93; sparkCol[i*3+1]=mix===0?0.78:mix===1?0.85:0.55; sparkCol[i*3+2]=mix===0?0.38:mix===1?0.93:0.68;
+}
+const sparkGeo=new THREE.BufferGeometry();
+sparkGeo.setAttribute("position",new THREE.BufferAttribute(sparkPos,3));
+sparkGeo.setAttribute("color",new THREE.BufferAttribute(sparkCol,3));
+const sparks=new THREE.Points(sparkGeo,new THREE.PointsMaterial({size:.042,transparent:true,opacity:.72,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
+orb.add(sparks);
+const coreLight=new THREE.PointLight(C1,1.2,5), coreLightCyan=new THREE.PointLight(C3,0.7,4);
+orb.add(coreLight,coreLightCyan);
+const halo=new THREE.Mesh(new THREE.IcosahedronGeometry(1.32,2),new THREE.MeshBasicMaterial({color:C1,wireframe:true,transparent:true,opacity:.1,blending:THREE.AdditiveBlending,depthWrite:false}));
+orb.add(halo);
+const coreSolid=new THREE.Mesh(new THREE.IcosahedronGeometry(.18,0),new THREE.MeshBasicMaterial({color:C3,transparent:true,opacity:.35,blending:THREE.AdditiveBlending,depthWrite:false}));
+const coreInner=new THREE.Mesh(new THREE.IcosahedronGeometry(.12,0),new THREE.MeshBasicMaterial({color:C1,transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false}));
+const core = new THREE.Mesh(new THREE.IcosahedronGeometry(.26,0), new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:.98}));
+const coreGlowLine=wSphereGlow(.26,0,C1,.7,.35);
+orb.add(coreSolid,coreInner,core,coreGlowLine);
+const speakGlow = new THREE.Mesh(
+  new THREE.IcosahedronGeometry(.44,1),
+  new THREE.MeshBasicMaterial({color:C1,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false})
+);
+const speakGlowCyan = new THREE.Mesh(
+  new THREE.IcosahedronGeometry(.58,1),
+  new THREE.MeshBasicMaterial({color:C3,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false})
+);
+const speakGlowRose = new THREE.Mesh(
+  new THREE.TorusGeometry(.72,.012,6,48),
+  new THREE.MeshBasicMaterial({color:C5,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false})
+);
+orb.add(speakGlow,speakGlowCyan,speakGlowRose);
+const orbRings=[];
+for(let i=0;i<4;i++){const r=new THREE.Mesh(new THREE.TorusGeometry(1.16+i*.13,.008,8,80),new THREE.MeshBasicMaterial({color:i%2?C3:C1,transparent:true,opacity:.2-i*.04,blending:THREE.AdditiveBlending}));r.rotation.x=Math.PI/2.15+i*.22;orbRings.push(r);orb.add(r);}
+const STRING_N=18, STRING_SEGS=11, stringGroup=new THREE.Group(), stringBase=[];
+for(let i=0;i<STRING_N;i++){
+  const angle=(i/STRING_N)*Math.PI*2, phi=Math.acos(1-2*((i*0.37)%1)), off=i*0.45;
+  const posArr=new Float32Array(STRING_SEGS*3);
+  const geo=new THREE.BufferGeometry(); geo.setAttribute("position",new THREE.BufferAttribute(posArr,3));
+  const col=i%3===0?C3:i%3===1?C6:C1;
+  const line=new THREE.Line(geo,lineMat(col,.18+(i%5)*0.04));
+  stringGroup.add(line);
+  stringBase.push({angle,phi,off,line,posArr});
+}
+orb.add(stringGroup);
+const orbitOrbs=[];
+for(let i=0;i<8;i++){
+  const om=new THREE.Mesh(new THREE.SphereGeometry(.032,10,10),new THREE.MeshBasicMaterial({color:i%2?C3:C6,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false}));
+  om.userData={r:1.18+i*.075,sp:.32+i*.11,off:i,yOff:Math.sin(i*1.2)*.22};
+  orbitOrbs.push(om); orb.add(om);
+}
+const beamPts=new Float32Array(6);
+beamPts[0]=0;beamPts[1]=-0.4;beamPts[2]=0;beamPts[3]=0;beamPts[4]=2.0;beamPts[5]=0;
+const beamGeo=new THREE.BufferGeometry(); beamGeo.setAttribute("position",new THREE.BufferAttribute(beamPts,3));
+const energyBeam=new THREE.Line(beamGeo,lineMat(C3,.1));
+scene.add(energyBeam);
+const grid = new THREE.GridHelper(10,20,0x1a2838,0x080c14); grid.position.y=-1.88; grid.material.opacity=.12; grid.material.transparent=true; scene.add(grid);
+const starN=140, starPos=new Float32Array(starN*3);
+for(let i=0;i<starN;i++){const r=3.5+Math.random()*4.5,t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);
+  starPos[i*3]=r*Math.sin(p)*Math.cos(t);starPos[i*3+1]=r*Math.sin(p)*Math.sin(t);starPos[i*3+2]=r*Math.cos(p);}
+const starGeo=new THREE.BufferGeometry(); starGeo.setAttribute("position",new THREE.BufferAttribute(starPos,3));
+const stars=new THREE.Points(starGeo,new THREE.PointsMaterial({color:C3,size:.014,transparent:true,opacity:.28,blending:THREE.AdditiveBlending,depthWrite:false}));
+scene.add(stars);
+const pN=100+Math.min(STATUS.memory_count*6,120), pos=new Float32Array(pN*3), baseR=new Float32Array(pN), baseDir=new Float32Array(pN*3), pColor=new Float32Array(pN*3);
+for(let i=0;i<pN;i++){const r=1.05+Math.random()*1.9,t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);baseR[i]=r;
+  const x=r*Math.sin(p)*Math.cos(t),y=r*Math.sin(p)*Math.sin(t),z=r*Math.cos(p);
+  pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=z;baseDir[i*3]=x/r;baseDir[i*3+1]=y/r;baseDir[i*3+2]=z/r;
+  const mix=Math.random();const c=new THREE.Color().setRGB(0.91*mix+0.37*(1-mix),0.69*mix+0.78*(1-mix),0.31*mix+0.86*(1-mix));
+  pColor[i*3]=c.r;pColor[i*3+1]=c.g;pColor[i*3+2]=c.b;}
+const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(pos,3)); pg.setAttribute("color",new THREE.BufferAttribute(pColor,3));
+const particleMat=new THREE.PointsMaterial({size:.024,transparent:true,opacity:.58,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true});
+const particles=new THREE.Points(pg,particleMat);
+scene.add(particles);
+
+let t=0, orbSpeed=0.008, zoomPct=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const state = document.getElementById("orb-panel").dataset.state || "idle";
+  if (state === "listening") orbSpeed = 0.016;
+  else if (state === "speaking") orbSpeed = 0.024;
+  else if (state === "processing" || state === "executing") orbSpeed = 0.022;
+  else if (state === "success") orbSpeed = 0.012;
+  else orbSpeed = ACTIVE ? 0.011 : 0.007;
+  t += orbSpeed;
+  if(pinchZooming) camera.position.z=orbZoom;
+  else camera.position.z+=(orbZoom-camera.position.z)*0.35;
+  shell1.rotation.y=t*0.5; shell2.rotation.y=-t*1.1; shell3.rotation.x=t*0.9; shell4.rotation.y=t*1.6;
+  sparks.rotation.y=t*0.6;
+  stars.rotation.y=t*0.04; stars.rotation.x=Math.sin(t*0.12)*0.02;
+  orbRings.forEach((r,i)=>{r.rotation.z=t*(0.18+i*0.08);});
+  const breath = state === "idle" ? Math.sin(t * 2.2) * 0.035 : Math.sin(t * 3) * (listening || speaking ? 0.11 : 0.05);
+  const speakBoost = speaking ? voiceLevel * 0.55 : 0;
+  const pulse = 1 + voiceLevel * 0.35 + breath + speakBoost * 0.25;
+  bloomLayers.forEach((m,i)=>{
+    const base=0.03+i*0.012;
+    m.material.opacity=base+voiceLevel*0.15+(speaking?0.12:0)+Math.sin(t*2.2+i*0.7)*0.015;
+    m.scale.setScalar(pulse*(1+i*0.018));
+  });
+  sparks.material.opacity=0.55+voiceLevel*0.45+(speaking?0.3:0);
+  sparks.material.size=0.038+voiceLevel*0.05+(speaking?0.02:0);
+  coreLight.intensity=0.9+voiceLevel*1.8+(speaking?1.2:0);
+  coreLightCyan.intensity=0.5+voiceLevel*1.2+(speaking?0.9:0);
+  halo.rotation.y=-t*0.35; halo.rotation.x=t*0.15;
+  halo.material.opacity=0.08+voiceLevel*0.12+(speaking?0.14:0);
+  stringBase.forEach(s=>{
+    const arr=s.posArr, vibAmp=0.025+voiceLevel*0.06+(speaking?0.04:0);
+    for(let j=0;j<STRING_SEGS;j++){
+      const r=0.1+j*0.105*particleSpread;
+      const vib=Math.sin(t*5+s.off+j*0.6)*vibAmp;
+      const a=s.angle+vib, y=Math.sin(s.phi+j*0.18)*r*0.55+Math.sin(t*2.5+s.off)*0.035;
+      arr[j*3]=Math.cos(a)*r; arr[j*3+1]=y; arr[j*3+2]=Math.sin(a)*r;
+    }
+    s.line.geometry.attributes.position.needsUpdate=true;
+    s.line.material.opacity=0.14+voiceLevel*0.35+(speaking?0.28:0)+(state==="processing"?0.1:0);
+  });
+  orbitOrbs.forEach(o=>{
+    const a=t*o.userData.sp+o.userData.off, r=o.userData.r*particleSpread;
+    o.position.set(Math.cos(a)*r, o.userData.yOff+Math.sin(a*1.4)*0.12, Math.sin(a)*r);
+    o.material.opacity=0.45+voiceLevel*0.45+(speaking?0.25:0);
+    o.scale.setScalar(1+voiceLevel*0.5);
+  });
+  const bp=energyBeam.geometry.attributes.position.array;
+  bp[4]=1.6+pulse*0.5+Math.sin(t*7)*0.08*(speaking?1.5:1);
+  energyBeam.geometry.attributes.position.needsUpdate=true;
+  energyBeam.material.opacity=0.05+voiceLevel*0.18+(speaking?0.28:0);
+  orb.rotation.y = t * 0.85;
+  orb.rotation.x = Math.sin(t * 0.35) * 0.08;
+  core.rotation.y=t*1.8; coreInner.rotation.y=-t*2.4; coreGlowLine.rotation.y=t*1.2;
+  coreSolid.scale.setScalar(pulse*0.95); coreInner.scale.setScalar(pulse*0.88);
+  core.scale.setScalar(pulse); coreGlowLine.scale.setScalar(pulse*1.08);
+  orb.scale.setScalar(0.92 + voiceLevel * 0.12 + (speaking ? 0.06 : 0));
+  const glowAmt=speaking?0.22+voiceLevel*0.58:voiceLevel*0.14;
+  speakGlow.material.opacity=glowAmt;
+  speakGlowCyan.material.opacity=speaking?glowAmt*0.58:voiceLevel*0.07;
+  speakGlowRose.material.opacity=speaking?glowAmt*0.35:0;
+  speakGlow.scale.setScalar(1+voiceLevel*0.95+(speaking?Math.sin(t*8)*0.08:0));
+  speakGlowCyan.scale.setScalar(1.1+voiceLevel*1.1);
+  speakGlowRose.rotation.z=t*1.6;
+  speakGlow.rotation.y=t*1.4;
+  speakGlowCyan.rotation.y=-t*1.1;
+  particles.rotation.y = t * (0.1 + voiceLevel * 0.25);
+  particles.rotation.x = Math.sin(t * 0.2) * 0.04 * particleSpread;
+  const pArr=pg.attributes.position.array;
+  for(let i=0;i<pN;i++){
+    const br=baseR[i]*particleSpread;
+    const ang=t*0.35+i*0.08;
+    const wobble=Math.sin(ang)*0.06*voiceLevel;
+    const s=br+wobble;
+    pArr[i*3]=baseDir[i*3]*s;pArr[i*3+1]=baseDir[i*3+1]*s;pArr[i*3+2]=baseDir[i*3+2]*s;
+  }
+  pg.attributes.position.needsUpdate=true;
+  particleMat.opacity=0.4+voiceLevel*0.48+(speaking?0.22:0);
+  particleMat.size=0.02+voiceLevel*0.035+(speaking?0.018:0);
+  if(!userZoomed && !pinchZooming && state==="idle" && Date.now()-lastZoomAt>20000)
+    orbZoom+=(ZOOM_DEFAULT-orbZoom)*0.008;
+  renderer.render(scene, camera);
+}
+animate();
+const orbPanel=document.getElementById("orb-panel");
+function onOrbWheel(e){
+  e.preventDefault();
+  e.stopPropagation();
+  setOrbZoom(orbZoom+e.deltaY*0.012);
+  document.getElementById("gesture-status").textContent=`ZOOM · CORE ${Math.round((1-zoomPct)*100)}%`;
+}
+wrap.addEventListener("wheel",onOrbWheel,{passive:false});
+orbPanel.addEventListener("wheel",onOrbWheel,{passive:false});
+renderer.domElement.addEventListener("wheel",onOrbWheel,{passive:false});
+
+// ——— GESTURE HOLD ———
+function setHoldProgress(p){
+  document.getElementById("hold-ring").style.background=`conic-gradient(#ffaa30 ${p*360}deg, transparent 0)`;
+}
+function tryGesture(name){
+  const now=Date.now();
+  if(name!==holdGesture){holdGesture=name;holdStart=now;document.getElementById("gesture-status").textContent=GESTURE_MAP[name][1]+" · HOLD";return;}
+  const prog=Math.min((now-holdStart)/HOLD_MS,1);
+  setHoldProgress(prog);
+  if(prog>=1 && now-lastFire>COOLDOWN_MS){lastFire=now;holdGesture=null;setHoldProgress(0);sendCommand(GESTURE_MAP[name][0],"gesture:"+name);}
+}
+function clearGesture(){
+  if(holdGesture){holdGesture=null;setHoldProgress(0);}
+  if(Date.now()-lastZoomAt>350) pinchZooming=false;
+  if(!speaking && !pinchZooming && document.getElementById("orb-panel").dataset.state==="idle")
+    document.getElementById("gesture-status").textContent="GESTURE STANDBY";
+}
+
+// ——— VOICE ———
+async function setupVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR){recognition=new SR();recognition.interimResults=true;recognition.lang="en-US";
+    recognition.onresult=e=>{let f="";for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)f+=e.results[i][0].transcript;if(f.trim()){listening=false;document.getElementById("mic-btn").classList.remove("on");sendCommand(f.trim(),"voice");}};
+    recognition.onend=()=>{listening=false;document.getElementById("mic-btn").classList.remove("on");if(document.getElementById("orb-panel").dataset.state==="listening")setCoreState("idle");};};
+  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});const ctx=new AudioContext();const an=ctx.createAnalyser();an.fftSize=256;ctx.createMediaStreamSource(stream).connect(an);const d=new Uint8Array(an.frequencyBinCount);
+    (function tick(){an.getByteFrequencyData(d);let s=0;for(let i=0;i<d.length;i++)s+=d[i];const mic=(s/d.length/255)*(listening?1.8:0.6);if(!speaking)voiceLevel=Math.max(voiceLevel*.88,mic);requestAnimationFrame(tick);})();}catch(_){}
+  document.getElementById("mic-btn").onclick = toggleMic;
+  document.getElementById("command-mic").onclick = toggleMic;
+  function toggleMic() {
+    if (!recognition) return;
+    jarvis.ensureCtx();
+    if (listening) { recognition.stop(); setCoreState("idle"); return; }
+    listening = true;
+    setCoreState("listening");
+    jarvis.sfxListen();
+    document.getElementById("mic-btn").classList.add("on");
+    recognition.start();
+  }
+}
+
+// Audio control buttons
+document.getElementById("btn-ambient").onclick = function() {
+  jarvis.ensureCtx();
+  jarvis.toggleAmbient(this);
+};
+document.getElementById("btn-voice").onclick = function() {
+  jarvis.voiceOn = !jarvis.voiceOn;
+  this.classList.toggle("on", jarvis.voiceOn);
+  if (!jarvis.voiceOn) window.speechSynthesis?.cancel();
+  speaking = false;
+  stopSpeakVisualizer();
+};
+
+// ——— MEDIAPIPE ———
+async function setupGestures(){
+  try{
+    const {HandLandmarker,FilesetResolver}=await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8");
+    const vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8/wasm");
+    const hmOpts={baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"},runningMode:"VIDEO",numHands:1};
+    let hm;
+    try{
+      hm=await HandLandmarker.createFromOptions(vision,{...hmOpts,baseOptions:{...hmOpts.baseOptions,delegate:"GPU"}});
+    }catch(_){
+      hm=await HandLandmarker.createFromOptions(vision,{...hmOpts,baseOptions:{...hmOpts.baseOptions,delegate:"CPU"}});
+    }
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:640,height:480}});
+    const cam=document.getElementById("cam-preview");cam.srcObject=stream;await cam.play();cam.style.display="block";
+    document.getElementById("gesture-status").textContent="GESTURE LIVE · PINCH TO ZOOM";
+    let last=0;
+    (function loop(){if(cam.readyState>=2){const now=performance.now();if(now-last>50){last=now;const res=hm.detectForVideo(cam,now);if(res.landmarks?.length)classify(res.landmarks[0]);else clearGesture();}}requestAnimationFrame(loop);})();
+  }catch(err){document.getElementById("gesture-status").textContent="CAM OPTIONAL · SCROLL ORB TO ZOOM";}
+}
+function classify(lm){
+  const th=lm[4],ix=lm[8],mi=lm[12],ri=lm[16],pi=lm[20],wr=lm[0];
+  const ixUp=ix.y<wr.y-0.05, miUp=mi.y<wr.y-0.04, riUp=ri.y<wr.y-0.04, piUp=pi.y<wr.y-0.04;
+  const pinchDist=dist(th,ix);
+  if(pinchDist<0.15){
+    applyPinchZoom(pinchDist);
+    if(pinchDist<0.04)return tryGesture("pinch");
+    return;
+  }
+  if(Date.now()-lastZoomAt>350) pinchZooming=false;
+  if(ixUp&&miUp&&riUp&&piUp)return tryGesture("palm");
+  if(ixUp&&!miUp&&!riUp&&!piUp)return tryGesture("point");
+  if(!ixUp&&!miUp&&!riUp&&!piUp)return tryGesture("fist");
+  if(ixUp&&miUp&&!riUp&&!piUp)return tryGesture("spread");
+  clearGesture();
+}
+
+setupVoice(); setupGestures(); setupWakeWord();
+
+function setupWakeWord() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR || VOICE.wake_enabled === false) return;
+
+  const phrases = (VOICE.all_phrases || VOICE.launch_phrases || ["hey astra", "wake up astra"])
+    .map(p => p.toLowerCase());
+  let wakeRec = null;
+  let commandMode = false;
+
+  function startWakeLoop() {
+    if (commandMode || VOICE.wake_enabled === false) return;
+    wakeRec = new SR();
+    wakeRec.continuous = true;
+    wakeRec.interimResults = true;
+    wakeRec.lang = "en-US";
+    wakeRec.onresult = (e) => {
+      let chunk = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        chunk += e.results[i][0].transcript;
+      }
+      const text = chunk.toLowerCase();
+      for (const phrase of phrases) {
+        if (!text.includes(phrase)) continue;
+        const rest = text.split(phrase).pop().trim().replace(/^[,.\s!]+/, "");
+        astraAudio.sfxListen();
+        document.getElementById("gesture-status").textContent =
+          `WAKE · ${(VOICE.assistant_name || "Astra").toUpperCase()} LISTENING`;
+        if (rest.length > 2) {
+          sendCommand(rest, "wake");
+          return;
+        }
+        commandMode = true;
+        try { wakeRec.stop(); } catch (_) {}
+        listenForCommand();
+        return;
+      }
+    };
+    wakeRec.onend = () => {
+      if (!commandMode && VOICE.wake_enabled !== false) {
+        try { wakeRec.start(); } catch (_) { setTimeout(startWakeLoop, 800); }
+      }
+    };
+    try { wakeRec.start(); } catch (_) {}
+  }
+
+  function listenForCommand() {
+    const cmdRec = new SR();
+    cmdRec.lang = "en-US";
+    cmdRec.onresult = (e) => {
+      if (!e.results[0].isFinal) return;
+      const said = e.results[0][0].transcript.trim();
+      commandMode = false;
+      if (said) sendCommand(said, "wake");
+      setTimeout(startWakeLoop, 600);
+    };
+    cmdRec.onend = () => {
+      commandMode = false;
+      setTimeout(startWakeLoop, 600);
+    };
+    try { cmdRec.start(); } catch (_) {
+      commandMode = false;
+      startWakeLoop();
+    }
+  }
+
+  startWakeLoop();
+}
+
+window.addEventListener("resize",()=>{const nw=wrap.clientWidth,nh=wrap.clientHeight;camera.aspect=nw/nh;camera.updateProjectionMatrix();renderer.setSize(nw,nh);});
+</script>
+</body>
+</html>

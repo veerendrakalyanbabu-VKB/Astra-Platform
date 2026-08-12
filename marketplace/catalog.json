@@ -1,0 +1,20 @@
+{
+  "weather": {
+    "name": "Weather",
+    "description": "Get a weather-style status report",
+    "version": "1.0.0",
+    "author": "Astra Team"
+  },
+  "quotes": {
+    "name": "Daily Quotes",
+    "description": "Inspirational quotes on demand",
+    "version": "1.0.0",
+    "author": "Astra Team"
+  },
+  "timer": {
+    "name": "Quick Timer",
+    "description": "Set and check simple timers",
+    "version": "1.0.0",
+    "author": "Astra Team"
+  }
+}

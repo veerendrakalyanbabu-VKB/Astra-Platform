@@ -1,0 +1,17 @@
+{
+    "rules": [
+        {
+            "action": "FORMAT_DISK",
+            "decision": "BLOCK"
+        },
+        {
+            "action": "DELETE_FILE",
+            "decision": "CONFIRM",
+            "max_per_session": 5
+        },
+        {
+            "action": "SHUTDOWN_PC",
+            "decision": "CONFIRM"
+        }
+    ]
+}

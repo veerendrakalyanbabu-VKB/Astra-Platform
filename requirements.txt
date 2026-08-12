@@ -1,0 +1,4 @@
+# Core deps for Desktop, Mobile, Web UI, and optional Stripe checkout
+streamlit>=1.57
+pytest>=8.0
+stripe>=8.0

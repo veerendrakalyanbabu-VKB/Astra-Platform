@@ -1,0 +1,35 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Runtime / user data
+logs/
+*.log
+data/users/
+data/sync/
+data/learning.json
+data/session.json
+data/memory.json
+data/usage.json
+data/roi.json
+data/revolution.json
+data/tier.json
+data/integrations.json
+data/voice_settings.json
+voice.wav
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
