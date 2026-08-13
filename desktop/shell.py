@@ -16,10 +16,12 @@ def _run_command(bridge, command: str) -> None:
 
     response = bridge.run(command)
     st.session_state.shell_messages.append({"role": "user", "content": command})
+    reply = response.message or "Done."
     st.session_state.shell_messages.append({
         "role": "astra",
-        "content": response.message or "Done.",
+        "content": reply,
     })
+    st.session_state.pending_voice = reply
     if response.command_record:
         if "command_records" not in st.session_state:
             st.session_state.command_records = []
@@ -104,6 +106,8 @@ def render():
         st.session_state.shell_messages = []
         st.session_state.command_records = []
         st.session_state.dash_dirty = True
+        st.session_state.intro_shown = False
+        st.session_state.welcome_voice_done = False
 
     if handle_ultron_events(bridge, _run_command):
         st.rerun()
@@ -112,6 +116,15 @@ def render():
         st.rerun()
 
     status, dashboard, health, boot_status_data, subsystems, capabilities = _cached_ui_data(bridge)
+
+    show_intro = not st.session_state.get("intro_shown", False)
+    speak_welcome = not st.session_state.get("welcome_voice_done", False)
+    if show_intro:
+        st.session_state.intro_shown = True
+    if speak_welcome:
+        st.session_state.welcome_voice_done = True
+
+    pending_voice = st.session_state.pop("pending_voice", "") or ""
 
     render_astra_interface(
         status=status,
@@ -125,6 +138,9 @@ def render():
         boot_status=boot_status_data,
         subsystems=subsystems,
         capabilities=capabilities,
+        pending_voice=pending_voice,
+        show_intro=show_intro,
+        speak_welcome=speak_welcome,
     )
 
 

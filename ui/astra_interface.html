@@ -764,29 +764,32 @@ function stopSpeakVisualizer() {
 }
 
 function sendCommand(cmd, src) {
+  cmd = (cmd || "").trim();
+  if (!cmd) return;
   cmd = normalizeAgentCommand(cmd);
-  astra_hello.sfxSend();
+  try { astra_hello.sfxSend(); } catch (_) {}
   setCoreState("executing");
-  try { sessionStorage.setItem("astra_speak_next", "1"); } catch (_) {}
-  const targets = [window.top, window.parent];
+  document.getElementById("gesture-status").textContent = "TRANSMITTING · " + cmd.slice(0, 48);
+
+  const payload = { type: "astra_command", cmd, src: src || "ui" };
+  let posted = false;
+  const targets = [];
+  try { if (window.parent && window.parent !== window) targets.push(window.parent); } catch (_) {}
+  try { if (window.top && window.top !== window) targets.push(window.top); } catch (_) {}
   for (const w of targets) {
-    try {
-      if (!w || w === window) continue;
-      const u = new URL(w.location.href);
-      u.searchParams.set("astra_cmd", cmd);
-      u.searchParams.set("astra_src", src);
-      w.location.href = u.toString();
-      return;
-    } catch (_) {}
+    try { w.postMessage(payload, "*"); posted = true; } catch (_) {}
   }
-  try {
-    const u = new URL(window.location.href);
-    u.searchParams.set("astra_cmd", cmd);
-    u.searchParams.set("astra_src", src);
-    window.location.href = u.toString();
-  } catch (_) {
-    setCoreState("error");
-    document.getElementById("gesture-status").textContent = "CMD FAILED · use command dock";
+  if (!posted) {
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set("astra_cmd", cmd);
+      u.searchParams.set("astra_src", src || "ui");
+      window.location.href = u.toString();
+      return;
+    } catch (_) {
+      setCoreState("error");
+      document.getElementById("gesture-status").textContent = "CMD FAILED · reload page";
+    }
   }
 }
 
@@ -874,16 +877,13 @@ function logTime() {
 }
 function playWelcomeVoice() {
   if (!astraAudio.voiceOn || !window.speechSynthesis) return;
-  try {
-    if (sessionStorage.getItem("astra_welcome_voice_v1") === "1") return;
-    sessionStorage.setItem("astra_welcome_voice_v1", "1");
-  } catch (_) {}
+  if (!STATUS.speak_welcome) return;
   const who = STATUS.user && STATUS.user !== "User" && STATUS.user !== "Cosmic" ? STATUS.user : "Commander";
   const assistant = VOICE.assistant_name || "Astra";
   const wakeList = (VOICE.launch_phrases || VOICE.all_phrases || ["hey astra", "wake up astra"]).slice(0, 4).join(", ");
   const hour = new Date().getHours();
   const greet = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const msg = `${greet}, ${who}. ${assistant} command OS is online. Wake phrases: ${wakeList}. I route your intent through agent factories—not scattered apps. Transmit via voice or the command channel.`;
+  const msg = `${greet}, ${who}. ${assistant} command OS is online. Wake phrases: ${wakeList}. Type a command or click VOICE to speak.`;
   setTimeout(() => {
     try { astraAudio.sfxBoot(); } catch (_) {}
     astraAudio.speak(msg);
@@ -1355,9 +1355,7 @@ function populateLogQuick() {
 }
 
 function startCommandLogIntro() {
-  const introKey = "astra_cmd_log_intro_v4";
-  let skipIntro = false;
-  try { skipIntro = sessionStorage.getItem(introKey) === "1"; } catch (_) {}
+  const skipIntro = STATUS.skip_intro === true;
 
   if (COMMAND_RECORDS.length > 0) {
     renderCommandRecords();
@@ -1398,7 +1396,6 @@ function startCommandLogIntro() {
       chatEl.appendChild(div);
       appendLogEntry("OK", "SYSTEM NOMINAL · AWAITING COMMAND", "ok");
       populateLogQuick();
-      try { sessionStorage.setItem(introKey, "1"); } catch (_) {}
       playWelcomeVoice();
       return;
     }
@@ -1430,8 +1427,18 @@ function renderMessages() {
   populateLogQuick();
 }
 
-// Speak latest Astra response after command (Astra voice)
-(function speakLatestResponse() {
+// Speak Astra response after command (server-driven — iframe sessionStorage is unreliable)
+(function speakPendingVoice() {
+  if (STATUS.pending_voice && astraAudio.voiceOn) {
+    const text = STATUS.pending_voice;
+    setTimeout(() => {
+      try { astra_hello.sfxResponse(); } catch (_) {}
+      astra_hello.speak(text);
+      setCoreState("success");
+      document.getElementById("gesture-status").textContent = "RESPONSE DELIVERED";
+    }, 500);
+    return;
+  }
   try {
     if (sessionStorage.getItem("astra_speak_next") !== "1") return;
     sessionStorage.removeItem("astra_speak_next");

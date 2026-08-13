@@ -62,6 +62,38 @@ def _interface_html_template() -> str:
     return INTERFACE_HTML.read_text(encoding="utf-8")
 
 
+def _render_command_bridge() -> None:
+    """Attach postMessage listener on the Streamlit parent (UI iframe cannot navigate top)."""
+    components.html(
+        """
+        <script>
+        (function () {
+          var root = window;
+          try {
+            if (window.parent && window.parent !== window) root = window.parent;
+          } catch (_) {}
+          if (root.__astraBridgeReady) return;
+          root.__astraBridgeReady = true;
+          root.addEventListener("message", function (e) {
+            var d = e.data;
+            if (!d || d.type !== "astra_command" || !d.cmd) return;
+            try {
+              var u = new URL(root.location.href);
+              u.searchParams.set("astra_cmd", d.cmd);
+              u.searchParams.set("astra_src", d.src || "ui");
+              root.location.href = u.toString();
+            } catch (err) {
+              console.warn("ASTRA command bridge:", err);
+            }
+          });
+        })();
+        </script>
+        """,
+        height=0,
+        scrolling=False,
+    )
+
+
 def _render_html(html: str, height: int = 860) -> None:
     """Full Command OS iframe — Three.js, MediaPipe, wake word, parent navigation."""
     components.html(html, height=height, scrolling=False)
@@ -79,7 +111,11 @@ def render_astra_interface(
     boot_status: dict = None,
     subsystems: list = None,
     capabilities: list = None,
+    pending_voice: str = "",
+    show_intro: bool = True,
+    speak_welcome: bool = False,
 ):
+    _render_command_bridge()
     html = _interface_html_template()
     payload = {
         "user": status.get("user", "User"),
@@ -98,6 +134,9 @@ def render_astra_interface(
         "privacy": status.get("privacy", {}),
         "voice_settings": status.get("voice_settings", {}),
         "location": status.get("location", {}),
+        "pending_voice": pending_voice or "",
+        "skip_intro": not show_intro,
+        "speak_welcome": speak_welcome,
     }
     html = (
         html.replace("__LAYOUT__", layout)
@@ -139,8 +178,20 @@ def render_ultron_core(
 def pop_ultron_event() -> Tuple[Optional[str], Optional[str]]:
     cmd = st.query_params.get("astra_cmd")
     source = st.query_params.get("astra_src")
+    if isinstance(cmd, list):
+        cmd = cmd[0] if cmd else None
+    if isinstance(source, list):
+        source = source[0] if source else None
     if cmd:
-        st.query_params.clear()
+        try:
+            del st.query_params["astra_cmd"]
+        except Exception:
+            pass
+        try:
+            if "astra_src" in st.query_params:
+                del st.query_params["astra_src"]
+        except Exception:
+            pass
         return cmd, source or "ultron"
     return None, None
 
