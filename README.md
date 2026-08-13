@@ -6,7 +6,8 @@
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
 ![Streamlit](https://img.shields.io/badge/streamlit-1.57+-red)
 ![License MIT](https://img.shields.io/badge/license-MIT-green)
-[![Live Demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-astra--platform--os.streamlit.app-gold?style=for-the-badge)](https://astra-platform-os.streamlit.app/)
+[![Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://astra-platform-os.streamlit.app/)
 
 ---
 
@@ -20,11 +21,13 @@ ASTRA is a **local-first AI command center** — black/gold/cyan mission-control
 | **Knowledge Graph** | Teach topics — `learn about Kubernetes` grows the core |
 | **Memory** | Personal facts — `remember my goal is …` |
 | **Agent Squad** | CORE · NOVA · PILOT · MENTOR · LAUNCH · LEDGER |
-| **LLM Bridge** | Claude / GPT when API key present — offline fallbacks without |
+| **LLM Bridge** | Groq / Claude / GPT when API key present — offline fallbacks without |
 
 ---
 
 ## Screenshots & demo
+
+**Live:** [https://astra-platform-os.streamlit.app/](https://astra-platform-os.streamlit.app/)
 
 ```powershell
 cd astra-platform
