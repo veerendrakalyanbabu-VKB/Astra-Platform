@@ -1141,11 +1141,6 @@ const archDiag = document.getElementById("arch-diagram");
 if (archDiag) {
   archDiag.innerHTML = "USER → COMMAND INTERFACE → <b>ASTRA CORE</b><br/>├ NOVA · PILOT · MENTOR<br/>├ LEDGER · LAUNCH · FORTRESS<br/>└ AUDIT / MEMORY / LOCAL DATA";
 }
-const bottomBrief = document.getElementById("bottom-brief-text");
-if (bottomBrief && DASH.brief) {
-  bottomBrief.innerHTML = esc((DASH.brief.greeting || DASH.brief.headline || "System nominal · awaiting command.").slice(0, 200));
-}
-
 // Status chips (legacy compat)
 const chipsEl = document.getElementById("chips");
 if (chipsEl) {
