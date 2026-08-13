@@ -11,13 +11,6 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from ui.ultron import HUD_CSS, handle_ultron_events, render_astra_interface
 
-FAST_WELCOME = """Astra v3.5 · Cosmic (free forever) · ready.
-
-Squad online: CORE · NOVA · PILOT · MENTOR · LAUNCH · LEDGER
-Try: morning brief · show weather · industrial revolution
-Say: ask nova about AI trends · student mode · show squad"""
-
-
 def _run_command(bridge, command: str) -> None:
     import streamlit as st
 
@@ -94,7 +87,6 @@ def render():
 
     if "shell_messages" not in st.session_state:
         st.session_state.shell_messages = []
-        st.session_state.shell_messages.append({"role": "astra", "content": FAST_WELCOME})
         st.session_state.dash_dirty = True
 
     if handle_ultron_events(bridge, _run_command):
