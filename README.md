@@ -51,7 +51,7 @@ cd astra-platform
 | Command OS | `python main.py --desktop` | 8501 |
 | Portal | `python main.py --portal` | 8503 |
 | Mobile | `python main.py --mobile` | 8502 |
-| API | `python main.py --serve` | 8080 |
+| API | `python main.py --serve` | 8787 |
 
 ---
 

@@ -1,10 +1,14 @@
 """Bridge between Desktop Shell UI and Astra Core pipeline."""
 
+import time
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
+from astra.core.commands.command_record import build_command_record
 from astra.core.planner.routines import list_routines
 from astra.core.planner.workspace import list_workspaces
+from astra.core.subsystems.registry import list_capabilities, list_subsystems
+from astra.core.system.health import boot_status, collect_health
 
 
 @dataclass
@@ -15,6 +19,7 @@ class ShellResponse:
     needs_confirmation: bool = False
     blocked: bool = False
     steps: List[str] = field(default_factory=list)
+    command_record: Dict[str, Any] = field(default_factory=dict)
 
 
 class CommandBridge:
@@ -48,8 +53,11 @@ class CommandBridge:
         if self.core.permissions.has_pending():
             return self._handle_confirmation(text)
 
+        start = time.perf_counter()
         result = self.core.process(text)
+        duration_ms = int((time.perf_counter() - start) * 1000)
         steps = self._extract_steps(result.message)
+        record = build_command_record(result, duration_ms)
 
         return ShellResponse(
             message=result.message or "Done.",
@@ -58,15 +66,20 @@ class CommandBridge:
             needs_confirmation=result.needs_confirmation,
             blocked=result.blocked,
             steps=steps,
+            command_record=record,
         )
 
     def _handle_confirmation(self, text: str) -> ShellResponse:
         confirmation = self.core.permissions.parse_confirmation(text)
 
         if confirmation is True:
+            start = time.perf_counter()
             result = self.core.pipeline.execute_approved_plan(text)
+            duration_ms = int((time.perf_counter() - start) * 1000)
         elif confirmation is False:
+            start = time.perf_counter()
             result = self.core.pipeline.cancel_pending(text)
+            duration_ms = int((time.perf_counter() - start) * 1000)
         else:
             return ShellResponse(
                 message="Please answer yes or no to confirm the pending action.",
@@ -74,11 +87,13 @@ class CommandBridge:
                 needs_confirmation=True,
             )
 
+        record = build_command_record(result, duration_ms, source="confirmation")
         return ShellResponse(
             message=result.message or "Done.",
             success=result.executed,
             intent=result.intent.intent,
             steps=self._extract_steps(result.message),
+            command_record=record,
         )
 
     def create_routine(self, key: str, steps: str) -> ShellResponse:
@@ -191,6 +206,19 @@ class CommandBridge:
             "voice_settings": self.core.voice_settings.snapshot() if self.core.voice_settings else {},
             "location": self._location_snapshot(),
         }
+
+    def get_health(self) -> dict:
+        boot_time = getattr(self.core, "boot_time", None)
+        return collect_health(self.core, boot_time)
+
+    def get_boot_status(self) -> dict:
+        return boot_status(self.core)
+
+    def get_subsystems(self) -> list:
+        return list_subsystems(self.core.tiers.tier_id)
+
+    def get_capabilities(self) -> list:
+        return list_capabilities(self.core)
 
     def get_command_dashboard(self) -> dict:
         from astra.core.agents import squad

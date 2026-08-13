@@ -43,7 +43,7 @@ class AstraCore:
     Central service container for all Astra Core modules.
     """
 
-    VERSION = "3.5.0"
+    VERSION = "3.6.0"
 
     def __init__(self, project_root=None):
         from pathlib import Path
@@ -90,6 +90,7 @@ class AstraCore:
         self.weather = None
         self.calendar = None
         self.ready = False
+        self.boot_time = None
 
     def initialize(self, voice_enabled: bool = False) -> None:
 
@@ -207,6 +208,9 @@ class AstraCore:
             active = self.profiles.registry["profiles"][self.profiles.active_profile]
             self.memory.remember("user_name", active.get("name", "Cosmic"))
 
+        import time
+
+        self.boot_time = time.time()
         self.ready = True
         self.event_bus.publish("core.ready", {"version": self.VERSION})
         self.logger.info("Astra Core ready")

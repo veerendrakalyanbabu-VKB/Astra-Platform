@@ -20,6 +20,10 @@ def _run_command(bridge, command: str) -> None:
         "role": "astra",
         "content": response.message or "Done.",
     })
+    if response.command_record:
+        if "command_records" not in st.session_state:
+            st.session_state.command_records = []
+        st.session_state.command_records.append(response.command_record)
     st.session_state.dash_dirty = True
 
 
@@ -55,9 +59,20 @@ def _cached_ui_data(bridge):
     if st.session_state.get("dash_dirty", True) or "status_cache" not in st.session_state:
         st.session_state.status_cache = bridge.get_status()
         st.session_state.dashboard_cache = bridge.get_command_dashboard()
+        st.session_state.health_cache = bridge.get_health()
+        st.session_state.boot_cache = bridge.get_boot_status()
+        st.session_state.subsystems_cache = bridge.get_subsystems()
+        st.session_state.capabilities_cache = bridge.get_capabilities()
         st.session_state.dash_dirty = False
 
-    return st.session_state.status_cache, st.session_state.dashboard_cache
+    return (
+        st.session_state.status_cache,
+        st.session_state.dashboard_cache,
+        st.session_state.get("health_cache", {}),
+        st.session_state.get("boot_cache", {}),
+        st.session_state.get("subsystems_cache", []),
+        st.session_state.get("capabilities_cache", []),
+    )
 
 
 def render():
@@ -87,6 +102,7 @@ def render():
 
     if "shell_messages" not in st.session_state:
         st.session_state.shell_messages = []
+        st.session_state.command_records = []
         st.session_state.dash_dirty = True
 
     if handle_ultron_events(bridge, _run_command):
@@ -95,7 +111,7 @@ def render():
     if _run_due_schedules(bridge):
         st.rerun()
 
-    status, dashboard = _cached_ui_data(bridge)
+    status, dashboard, health, boot_status_data, subsystems, capabilities = _cached_ui_data(bridge)
 
     render_astra_interface(
         status=status,
@@ -104,6 +120,11 @@ def render():
         dashboard=dashboard,
         layout="desktop",
         height=940,
+        command_records=st.session_state.get("command_records", []),
+        health=health,
+        boot_status=boot_status_data,
+        subsystems=subsystems,
+        capabilities=capabilities,
     )
 
 

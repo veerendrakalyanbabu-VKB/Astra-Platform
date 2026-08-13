@@ -74,6 +74,11 @@ def render_astra_interface(
     dashboard: dict = None,
     layout: str = "desktop",
     height: int = 860,
+    command_records: list = None,
+    health: dict = None,
+    boot_status: dict = None,
+    subsystems: list = None,
+    capabilities: list = None,
 ):
     html = _interface_html_template()
     payload = {
@@ -102,6 +107,11 @@ def render_astra_interface(
         .replace("__MESSAGES_JSON__", json.dumps(messages[-16:]))
         .replace("__SUGGESTIONS_JSON__", json.dumps(suggestions or []))
         .replace("__QUICK_DOCK_JSON__", json.dumps(QUICK_DOCK))
+        .replace("__COMMAND_RECORDS_JSON__", json.dumps((command_records or [])[-20:]))
+        .replace("__HEALTH_JSON__", json.dumps(health or {}))
+        .replace("__BOOT_STATUS_JSON__", json.dumps(boot_status or {}))
+        .replace("__SUBSYSTEMS_JSON__", json.dumps(subsystems or []))
+        .replace("__CAPABILITIES_JSON__", json.dumps(capabilities or []))
         .replace("__LLM_ACTIVE__", "true" if status.get("llm") == "Active" else "false")
         .replace("__VOICE_SETTINGS_JSON__", json.dumps(status.get("voice_settings", {})))
     )

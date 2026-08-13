@@ -152,6 +152,47 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #log-meta .log-session{color:rgba(255,170,48,.55)}
 #log-meta .log-live{color:#6ee7b7;animation:logLive 2.2s ease infinite}
 @keyframes logLive{0%,100%{opacity:1}50%{opacity:.35}}
+.log-meta-btn{font-family:'Share Tech Mono',monospace;font-size:.4rem;padding:3px 6px;border:1px solid rgba(94,200,219,.25);background:rgba(94,200,219,.06);color:rgba(94,200,219,.8);cursor:pointer;margin-left:4px}
+.log-meta-btn:hover{border-color:rgba(0,212,255,.5);color:#00d4ff}
+.cmd-block{margin-bottom:8px;padding:8px 10px;border:1px solid rgba(212,160,67,.14);background:rgba(0,0,0,.5);cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.cmd-block:hover{border-color:rgba(0,212,255,.35);box-shadow:0 0 12px rgba(0,212,255,.06)}
+.cmd-block.selected{border-color:rgba(255,170,48,.45);box-shadow:0 0 14px rgba(255,170,48,.08)}
+.cmd-block-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-family:'Share Tech Mono',monospace;font-size:.42rem;color:rgba(94,200,219,.65)}
+.cmd-block-id{color:rgba(255,170,48,.5)}
+.cmd-block-cmd{font-family:'IBM Plex Sans',sans-serif;font-size:.68rem;color:rgba(180,220,255,.95);margin-bottom:6px}
+.cmd-block-meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;font-family:'Share Tech Mono',monospace;font-size:.4rem;color:rgba(232,228,220,.65)}
+.cmd-block-meta span b{color:rgba(255,170,48,.75)}
+.cmd-block-state{display:inline-block;padding:2px 6px;border:1px solid rgba(110,231,183,.3);color:#6ee7b7;font-size:.38rem;margin-top:6px}
+.cmd-block-state.failed,.cmd-block-state.blocked{border-color:rgba(255,85,85,.35);color:#ff7777}
+.cmd-block-state.pending{border-color:rgba(255,170,48,.35);color:#ffaa30}
+#cmd-inspector{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:20px}
+#cmd-inspector.open{display:flex}
+.inspector-panel{width:min(520px,96vw);max-height:88vh;overflow-y:auto;border:1px solid rgba(0,212,255,.25);background:rgba(5,8,14,.96);padding:14px 16px}
+.inspector-head{font-family:'Orbitron','Rajdhani',sans-serif;font-size:.62rem;letter-spacing:.14em;color:#00d4ff;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.inspector-close{cursor:pointer;color:rgba(255,170,48,.7);font-size:1rem}
+.inspector-section{margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(212,160,67,.08)}
+.inspector-label{font-family:'Share Tech Mono',monospace;font-size:.4rem;color:rgba(94,200,219,.6);letter-spacing:.08em;margin-bottom:4px}
+.inspector-body{font-family:'IBM Plex Sans',sans-serif;font-size:.68rem;line-height:1.5;color:rgba(232,228,220,.9)}
+.inspector-plan{font-family:'Share Tech Mono',monospace;font-size:.52rem;color:rgba(180,220,255,.85);line-height:1.6}
+#arch-panel{margin-top:10px}
+.arch-node{display:flex;align-items:center;gap:6px;padding:5px 8px;margin-bottom:4px;border:1px solid rgba(212,160,67,.12);background:rgba(0,0,0,.35);cursor:pointer;font-size:.5rem;transition:all .2s}
+.arch-node:hover{border-color:rgba(0,212,255,.35);background:rgba(0,212,255,.04)}
+.arch-node .arch-dot{width:6px;height:6px;border-radius:50%;background:#6ee7b7;flex-shrink:0}
+.arch-node.locked .arch-dot{background:rgba(255,170,48,.35)}
+.arch-name{font-family:'Rajdhani',sans-serif;font-weight:600;color:rgba(255,170,48,.85);letter-spacing:.06em}
+.arch-title{font-family:'Share Tech Mono',monospace;font-size:.42rem;color:rgba(94,200,219,.6)}
+#cap-panel{position:fixed;inset:0;z-index:190;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:20px}
+#cap-panel.open{display:flex}
+.cap-panel{width:min(560px,96vw);max-height:88vh;overflow-y:auto;border:1px solid rgba(255,170,48,.22);background:rgba(5,8,14,.96);padding:14px 16px}
+.cap-item{padding:8px 0;border-bottom:1px solid rgba(212,160,67,.08)}
+.cap-item:last-child{border-bottom:0}
+.cap-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.58rem;color:#ffaa30}
+.cap-desc{font-size:.58rem;color:rgba(232,228,220,.8);margin:3px 0}
+.cap-meta{font-family:'Share Tech Mono',monospace;font-size:.4rem;color:rgba(94,200,219,.55)}
+.cap-status{display:inline-block;padding:1px 5px;border:1px solid rgba(110,231,183,.3);color:#6ee7b7;font-size:.38rem;margin-left:4px}
+.cap-status.degraded,.cap-status.beta{border-color:rgba(255,170,48,.35);color:#ffaa30}
+.health-row{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:.46rem;color:rgba(232,228,220,.7);margin-bottom:3px}
+.health-row span:last-child{color:rgba(94,200,219,.75)}
 .log-entry{display:grid;grid-template-columns:52px 56px minmax(0,1fr);gap:6px 8px;padding:7px 10px;border-bottom:1px solid rgba(212,160,67,.06);font-size:.68rem;line-height:1.5;animation:logIn .35s ease;align-items:start}
 .log-entry:last-child{border-bottom:0}
 @keyframes logIn{from{opacity:0;transform:translateX(-4px)}}
@@ -315,6 +356,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <div id="telemetry"></div>
       <div class="panel-title" style="margin-top:12px">◈ GESTURES · PINCH=ZOOM · HOLD 1.5s</div>
       <div class="gesture-list" id="gesture-legend"></div>
+      <div class="panel-title" style="margin-top:12px">◈ SYSTEM HEALTH</div>
+      <div id="health-panel"></div>
+      <div class="panel-title" style="margin-top:12px">◈ ARCHITECTURE</div>
+      <div id="arch-panel"></div>
     </div>
     <div id="orb-panel" data-state="idle">
       <div class="scan"></div>
@@ -390,6 +435,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     </div>
   </div>
 </div>
+<div id="cmd-inspector">
+  <div class="inspector-panel" id="inspector-content">
+    <div class="inspector-head">COMMAND INSPECTOR <span class="inspector-close" id="inspector-close">✕</span></div>
+  </div>
+</div>
+<div id="cap-panel">
+  <div class="cap-panel" id="cap-content">
+    <div class="inspector-head">CAPABILITY CENTER <span class="inspector-close" id="cap-close">✕</span></div>
+  </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script type="module">
 const STATUS = __STATUS_JSON__;
@@ -397,6 +452,11 @@ const DASH = __DASHBOARD_JSON__;
 const MESSAGES = __MESSAGES_JSON__;
 const SUGGESTIONS = __SUGGESTIONS_JSON__;
 const QUICK_DOCK = __QUICK_DOCK_JSON__;
+const COMMAND_RECORDS = __COMMAND_RECORDS_JSON__;
+const SYSTEM_HEALTH = __HEALTH_JSON__;
+const BOOT_STATUS = __BOOT_STATUS_JSON__;
+const SUBSYSTEMS = __SUBSYSTEMS_JSON__;
+const CAPABILITIES = __CAPABILITIES_JSON__;
 const VOICE = __VOICE_SETTINGS_JSON__;
 const ACTIVE = __LLM_ACTIVE__;
 const LAYOUT = "__LAYOUT__";
@@ -657,31 +717,35 @@ function sendCommand(cmd, src) {
   }
 }
 
-// Boot — cinematic sequence on load
-const BOOT_STEPS = [
-  "Loading neural core telemetry…",
-  "Arming privacy fortress…",
-  "Linking industrial squad…",
-  "Calibrating command channel…",
-  "Establishing intent pipeline…",
-  "READY FOR COMMAND",
-];
+// Boot — truthful initialization from actual system state
 function runBootSequence() {
   const bootEl = document.getElementById("boot");
   const stepsEl = document.getElementById("boot-steps");
+  const bootSteps = (BOOT_STATUS.steps || []).map(s => {
+    const mark = s.ok ? "✓" : s.degraded ? "!" : "✗";
+    return `${mark} ${s.label} · ${s.detail || ""}`;
+  });
+  const subSteps = (BOOT_STATUS.subsystems || []).map(s =>
+    `${s.ok ? "✓" : "○"} ${s.name} · ${s.status}`
+  );
+  const allSteps = bootSteps.concat(subSteps).concat([
+    BOOT_STATUS.operational ? "SYSTEM STATUS: FULLY OPERATIONAL" : "SYSTEM STATUS: DEGRADED (see logs)",
+    "READY FOR COMMAND",
+  ]);
   let i = 0;
   const stepTimer = setInterval(() => {
-    if (i < BOOT_STEPS.length) {
-      stepsEl.textContent = "▸ " + BOOT_STEPS[i];
+    if (i < allSteps.length) {
+      stepsEl.textContent = "▸ " + allSteps[i];
       i++;
     }
-  }, 380);
+  }, 340);
+  const duration = Math.max(2800, allSteps.length * 340 + 400);
   setTimeout(() => {
     clearInterval(stepTimer);
     bootEl.classList.add("hide");
     try { astraAudio.sfxBoot(); } catch (_) {}
     startCommandLogIntro();
-  }, 2600);
+  }, duration);
 }
 runBootSequence();
 
@@ -916,11 +980,56 @@ document.getElementById("chips").innerHTML =
   `<span class="chip on">PRIVACY ${privacy.score || 0}/${privacy.max_score || 5}</span>` +
   `<span class="chip">${STATUS.profile.toUpperCase()}</span>`;
 
-// Telemetry — ROI + revolution
+// Telemetry — ROI + revolution + real health
+const healthLines = [
+  ["UPTIME", SYSTEM_HEALTH.uptime_label || "—"],
+  ["CPU", SYSTEM_HEALTH.cpu_usage || "Not available"],
+  ["MEMORY", SYSTEM_HEALTH.memory_usage || "Not available"],
+  ["CMD OK", (SYSTEM_HEALTH.command_success_rate ?? "—") + "%"],
+];
 document.getElementById("telemetry").innerHTML = [
   ["ASTB ROI", "$" + (roi.value_saved_week_usd ?? 0)], ["HRS/WK", (roi.hours_saved_week ?? 0) + "h"],
   ["PROTOCOLS", rev.protocols_run ?? 0], ["TASKS/WK", roi.tasks_automated_week ?? 0],
 ].map(([l,v]) => `<div class="tele-item"><div class="tele-val">${v}</div><div class="tele-lbl">${l}</div></div>`).join("");
+
+document.getElementById("health-panel").innerHTML = healthLines.map(([l,v]) =>
+  `<div class="health-row"><span>${l}</span><span>${esc(String(v))}</span></div>`
+).join("") + (SYSTEM_HEALTH.services || []).slice(0, 4).map(s =>
+  `<div class="health-row"><span>${esc(s.name)}</span><span>${esc(s.status)} · ${esc(s.detail || "")}</span></div>`
+).join("");
+
+// Architecture panel — interactive subsystem nodes
+function showSubsystemDetail(sub) {
+  openInspector({
+    id: sub.id || sub.name,
+    command: sub.name + " // " + (sub.title || ""),
+    intent: "SUBSYSTEM",
+    subsystem: sub.name,
+    route: sub.name,
+    plan: sub.capabilities || [],
+    risk_level: "—",
+    permission_state: sub.permissions || "—",
+    execution_state: sub.status_label || "AVAILABLE",
+    duration_ms: 0,
+    result_summary: sub.what_it_does || sub.purpose || "",
+    verification: "—",
+    audit_status: "—",
+    why: (sub.how_it_works || "") + "\n\nExamples: " + ((sub.examples || []).join(" · ") || "—"),
+  });
+}
+document.getElementById("arch-panel").innerHTML = SUBSYSTEMS.map(sub =>
+  `<div class="arch-node${sub.locked ? " locked" : ""}" data-id="${esc(sub.id || sub.name)}">
+    <span class="arch-dot"></span>
+    <span class="arch-name">${esc(sub.name)}</span>
+    <span class="arch-title">${esc(sub.title || "")}</span>
+  </div>`
+).join("");
+document.getElementById("arch-panel").onclick = e => {
+  const node = e.target.closest(".arch-node");
+  if (!node) return;
+  const sub = SUBSYSTEMS.find(s => (s.id || s.name) === node.dataset.id);
+  if (sub) showSubsystemDetail(sub);
+};
 
 // Gesture legend
 document.getElementById("gesture-legend").innerHTML = Object.entries(GESTURE_MAP)
@@ -943,9 +1052,70 @@ function initLogMeta() {
   if (!meta) return;
   meta.innerHTML =
     `<span>SESSION <span class="log-session">${LOG_SESSION}</span></span>` +
-    `<span><span class="log-live">● LINKED</span> · ${esc(STATUS.version || "3.6")} · ${esc((STATUS.profile || "COSMIC").toUpperCase())}</span>`;
+    `<span><span class="log-live">● LINKED</span> · ${esc(STATUS.version || "3.6")} · ${esc((STATUS.profile || "COSMIC").toUpperCase())}` +
+    `<button class="log-meta-btn" id="btn-caps" type="button">CAPABILITIES</button>` +
+    `<button class="log-meta-btn" id="btn-health" type="button">HEALTH</button></span>`;
+  document.getElementById("btn-caps")?.addEventListener("click", openCapabilityPanel);
+  document.getElementById("btn-health")?.addEventListener("click", () => sendCommand("system info", "health-btn"));
 }
 initLogMeta();
+
+function openCapabilityPanel() {
+  const panel = document.getElementById("cap-panel");
+  const content = document.getElementById("cap-content");
+  content.innerHTML = `<div class="inspector-head">CAPABILITY CENTER <span class="inspector-close" id="cap-close">✕</span></div>` +
+    CAPABILITIES.map(c =>
+      `<div class="cap-item"><div class="cap-name">${esc(c.name)} <span class="cap-status ${(c.status || "").toLowerCase()}">${esc(c.status || "")}</span></div>` +
+      `<div class="cap-desc">${esc(c.description || "")}</div>` +
+      `<div class="cap-meta">${esc(c.subsystem || "")} · ${esc(c.category || "")} · ${esc(c.permissions || "")} · e.g. "${esc(c.example || "")}"</div></div>`
+    ).join("");
+  panel.classList.add("open");
+  document.getElementById("cap-close")?.addEventListener("click", () => panel.classList.remove("open"));
+}
+
+function openInspector(rec) {
+  const panel = document.getElementById("cmd-inspector");
+  const content = document.getElementById("inspector-content");
+  const planHtml = (rec.plan || []).map((p, i) => `${i + 1}. ${esc(p)}`).join("<br/>") || "—";
+  content.innerHTML =
+    `<div class="inspector-head">COMMAND INSPECTOR <span class="inspector-close" id="inspector-close">✕</span></div>` +
+    `<div class="inspector-section"><div class="inspector-label">COMMAND</div><div class="inspector-body">${esc(rec.command || "")}</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">INTENT · ROUTE</div><div class="inspector-body">${esc(rec.intent || "")} → ${esc(rec.subsystem || "")}</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">PLAN</div><div class="inspector-plan">${planHtml}</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">PERMISSION · RISK</div><div class="inspector-body">${esc(rec.permission_state || "")} · ${esc(rec.risk_level || "")}</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">EXECUTION · DURATION</div><div class="inspector-body">${esc(rec.execution_state || "")} · ${rec.duration_ms || 0}ms</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">RESULT</div><div class="inspector-body">${esc(rec.result_summary || "")}</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">VERIFICATION · AUDIT</div><div class="inspector-body">${esc(rec.verification || "")} · ${esc(rec.audit_status || "")} · ID ${esc(rec.id || "")}</div></div>` +
+    `<div class="inspector-section"><div class="inspector-label">WHY</div><div class="inspector-body">${esc(rec.why || "")}</div></div>`;
+  panel.classList.add("open");
+  document.getElementById("inspector-close")?.addEventListener("click", () => panel.classList.remove("open"));
+}
+
+function renderCommandBlock(rec) {
+  const block = document.createElement("div");
+  block.className = "cmd-block";
+  block.dataset.id = rec.id || "";
+  const stateCls = (rec.execution_state || "").toLowerCase().includes("fail") || rec.execution_state === "BLOCKED" ? "failed" :
+    rec.execution_state === "AWAITING_CONFIRMATION" ? "pending" : "";
+  const ts = (rec.timestamp || "").split("T")[1] || logTime();
+  block.innerHTML =
+    `<div class="cmd-block-head"><span>${esc(ts.slice(0, 8))}</span><span class="cmd-block-id">${esc(rec.id || "")}</span></div>` +
+    `<div class="cmd-block-cmd">${esc(rec.command || "")}</div>` +
+    `<div class="cmd-block-meta">` +
+    `<span>INTENT <b>${esc(rec.intent || "")}</b></span>` +
+    `<span>ROUTE <b>${esc(rec.subsystem || "")}</b></span>` +
+    `<span>RISK <b>${esc(rec.risk_level || "")}</b></span>` +
+    `<span>PERM <b>${esc(rec.permission_state || "")}</b></span>` +
+    `</div>` +
+  `<span class="cmd-block-state ${stateCls}">${esc(rec.execution_state || "")} · ${rec.duration_ms || 0}ms · ${esc(rec.verification || "")}</span>`;
+  block.addEventListener("click", () => {
+    chatEl.querySelectorAll(".cmd-block").forEach(b => b.classList.remove("selected"));
+    block.classList.add("selected");
+    openInspector(rec);
+  });
+  chatEl.appendChild(block);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
 
 const chatEl = document.getElementById("chat-msgs");
 const logQuickEl = document.getElementById("log-quick");
@@ -996,9 +1166,15 @@ function populateLogQuick() {
 }
 
 function startCommandLogIntro() {
-  const introKey = "astra_cmd_log_intro_v3";
+  const introKey = "astra_cmd_log_intro_v4";
   let skipIntro = false;
   try { skipIntro = sessionStorage.getItem(introKey) === "1"; } catch (_) {}
+
+  if (COMMAND_RECORDS.length > 0) {
+    renderCommandRecords();
+    populateLogQuick();
+    return;
+  }
 
   if (MESSAGES.length > 0) {
     renderMessages();
@@ -1015,13 +1191,13 @@ function startCommandLogIntro() {
   }
 
   const introLines = [
-    ["SYS", `ASTRA COMMAND OS v${STATUS.version || "3.6"} · session ${LOG_SESSION} initialized`],
-    ["SYS", "Neural core online · wireframe telemetry · voice channel armed"],
-    ["SYS", `Privacy fortress · ${privacy.score || 0}/${privacy.max_score || 5} shields · local-first architecture`],
-    ["SYS", `LLM bridge · ${llmLabel} · intent pipeline active`],
-    ["OK", "Squad deployed · CORE · NOVA · PILOT · MENTOR · LAUNCH · LEDGER"],
-    ["ASTRA", "Command channel open. I route your intent through agent factories—not scattered apps. Ready when you are."],
-    ["SYS", "Transmit via command dock · voice mic · gestures (local) · protocol execution"],
+    ["SYS", `ASTRA COMMAND OS v${BOOT_STATUS.version || STATUS.version || "3.6"} · session ${LOG_SESSION} initialized`],
+    ["SYS", `Pipeline online · ${SYSTEM_HEALTH.commands_processed || 0} commands in metrics · intent engine ready`],
+    ["SYS", `Privacy fortress · ${privacy.score || 0}/${privacy.max_score || 5} shields · ${BOOT_STATUS.privacy_score || "local-first"}`],
+    ["SYS", `LLM bridge · ${llmLabel}${BOOT_STATUS.llm_degraded ? " (degraded — set API key)" : ""}`],
+    ["OK", "Subsystems · CORE · FORTRESS · NOVA · PILOT · MENTOR · LAUNCH · LEDGER"],
+    ["ASTRA", "I am your command and automation layer—not a chatbot. Every command follows: intent → plan → permission → execution → audit. Click any log entry for the full inspector."],
+    ["SYS", "Transmit via command dock · voice · gestures · click ARCHITECTURE nodes to learn each subsystem"],
   ];
 
   let idx = 0;
@@ -1042,6 +1218,12 @@ function startCommandLogIntro() {
     setTimeout(tick, delay);
   };
   setTimeout(tick, 200);
+}
+
+function renderCommandRecords() {
+  chatEl.innerHTML = "";
+  COMMAND_RECORDS.forEach(rec => renderCommandBlock(rec));
+  populateLogQuick();
 }
 
 function renderMessages() {

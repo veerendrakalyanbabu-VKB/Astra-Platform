@@ -13,4 +13,4 @@ def test_command_bridge():
     assert "time" in response.message.lower()
 
     status = bridge.get_status()
-    assert status["version"] == "3.5.0"
+    assert status["version"] == "3.6.0"
