@@ -29,9 +29,7 @@ Save → app will reboot.
 
 ## 4. Your live URL
 
-Format: `https://astra-platform-veerendrakalyanbabu-vkb.streamlit.app`
-
-(Add custom subdomain in Settings if you want.)
+Live URL: **https://astra-platform-os.streamlit.app/**
 
 ## 5. What works on Cloud vs Local
 
