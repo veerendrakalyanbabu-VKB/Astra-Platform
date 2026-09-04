@@ -1,6 +1,6 @@
 # ASTRA // AI Command OS
 
-> **Intent → Agent Factory → Action** — a cinematic AI operating system with a living neural core, not a chatbot wrapper.
+> **Intent → routing → specialized assistance** — a local-first command surface for experimenting with memory, knowledge, voice, and provider-backed agents.
 
 [![CI](https://github.com/veerendrakalyanbabu-VKB/astra-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/veerendrakalyanbabu-VKB/astra-platform/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
@@ -13,7 +13,7 @@
 
 ## What is ASTRA?
 
-ASTRA is a **local-first AI command center** — black/gold/cyan mission-control UI, Three.js neural core, gesture control, voice, and a 6-agent industrial squad.
+ASTRA is an experimental **local-first AI command center**. It combines a Three.js interface with voice input, local memory, a lightweight knowledge graph, intent routing, and six specialized agent modes.
 
 | Layer | What it does |
 |-------|----------------|
